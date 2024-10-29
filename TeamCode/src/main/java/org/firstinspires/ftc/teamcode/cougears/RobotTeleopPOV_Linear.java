@@ -5,6 +5,26 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
+/*
+    ROBOT CONTROLS:
+    X: LinSlide Up
+    B: LinSlide Down
+    Y: Arm Up
+    A: Arm Down
+
+    Dpad-Up:
+    Dpad-Down:
+    Dpad-Left:
+    Dpad-Right:
+
+    R-Bumper: Open Claw
+    L-Bumper: Close Claw
+    R-Trigger: Open Bucket
+    L-Trigger: Close Bucket
+
+    L-Stick: FWD/BCK & Strafe
+    R-Stick: Yaw (Turning)
+ */
 
 @TeleOp(name="Robot: Teleop POV", group="Robot")
 public class RobotTeleopPOV_Linear extends LinearOpMode {
