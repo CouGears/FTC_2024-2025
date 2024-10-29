@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.cougears;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
@@ -10,12 +10,12 @@ import com.qualcomm.robotcore.util.Range;
 public class RobotTeleopPOV_Linear extends LinearOpMode {
 
     /* Declare OpMode members. */
-    public DcMotor  frontLeftDrive   = null;
-    public DcMotor  frontRightDrive  = null;
-    public DcMotor  backLeftDrive    = null;
-    public DcMotor  backRightDrive   = null;
-    public DcMotor  arm              = null;
-    public DcMotor  slide            = null;
+    public DcMotorEx frontLeftDrive   = null;
+    public DcMotorEx frontRightDrive  = null;
+    public DcMotorEx backLeftDrive    = null;
+    public DcMotorEx backRightDrive   = null;
+    public DcMotorEx arm              = null;
+    public DcMotorEx slide            = null;
     public Servo    claw             = null;
     public Servo    bucket           = null;
 
@@ -25,10 +25,8 @@ public class RobotTeleopPOV_Linear extends LinearOpMode {
     public static final double MID_SERVO   =  0.5 ;
     public static final double CLAW_SPEED  = 0.02 ;
     public static final double BUCKET_SPEED = 0.02 ;
-    public static final double ARM_UP_POWER    =  0.45 ;
-    public static final double ARM_DOWN_POWER  = -0.45 ;
-    public static final double SLIDE_UP_POWER   =  0.45 ;
-    public static final double SLIDE_DOWN_POWER = -0.45 ;
+    public static final double ARM_POWER    =  0.5 ;
+    public static final double SLIDE_POWER   =  0.5 ;
 
     @Override
     public void runOpMode() {
@@ -42,18 +40,32 @@ public class RobotTeleopPOV_Linear extends LinearOpMode {
         double max;
 
         // Define and Initialize Motors
-        frontLeftDrive  = hardwareMap.get(DcMotor.class, "front_left_drive");
-        frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
-        backLeftDrive   = hardwareMap.get(DcMotor.class, "back_left_drive");
-        backRightDrive  = hardwareMap.get(DcMotor.class, "back_right_drive");
-        arm             = hardwareMap.get(DcMotor.class, "arm");
-        slide           = hardwareMap.get(DcMotor.class, "slide");
+        frontLeftDrive  = hardwareMap.get(DcMotorEx.class, "motorFL");
+        frontRightDrive = hardwareMap.get(DcMotorEx.class, "motorFR");
+        backLeftDrive   = hardwareMap.get(DcMotorEx.class, "motorBL");
+        backRightDrive  = hardwareMap.get(DcMotorEx.class, "motorBR");
+        arm             = hardwareMap.get(DcMotorEx.class, "arm");
+        slide           = hardwareMap.get(DcMotorEx.class, "slide");
 
         // Set motor directions
-        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
-        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        frontLeftDrive.setDirection(DcMotorEx.Direction.FORWARD);
+        backLeftDrive.setDirection(DcMotorEx.Direction.REVERSE);
+        frontRightDrive.setDirection(DcMotorEx.Direction.REVERSE);
+        backRightDrive.setDirection(DcMotorEx.Direction.FORWARD);
+
+        // Set zero power behavior
+        frontLeftDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        frontRightDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        backLeftDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        backRightDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        arm.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        slide.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+
+        // Set up encoders for arm and slide
+        arm.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        slide.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        arm.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        slide.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
         // Define and initialize ALL installed servos.
         claw   = hardwareMap.get(Servo.class, "claw");
@@ -73,15 +85,15 @@ public class RobotTeleopPOV_Linear extends LinearOpMode {
 
             // POV Mode uses left stick to go forward, backward, and strafe
             // Right stick to turn left and right.
-            drive  = -gamepad1.left_stick_y;
-            strafe = gamepad1.left_stick_x;
+            drive  = -gamepad1.left_stick_x;  // Negative because the gamepad is inverted
+            strafe = gamepad1.left_stick_y;
             turn   = gamepad1.right_stick_x;
 
-            // Mecanum drive calculation
-            frontLeft  = drive + turn + strafe;
-            backLeft   = drive + turn - strafe;
-            frontRight = drive - turn - strafe;
-            backRight  = drive - turn + strafe;
+            // Corrected Mecanum drive calculation
+            frontLeft  = drive - turn - strafe;
+            backLeft   = drive - turn + strafe;
+            frontRight = drive + turn + strafe;
+            backRight  = drive + turn - strafe;
 
             // Normalize the values so none exceed +/- 1.0
             max = Math.max(Math.abs(frontLeft), Math.max(Math.abs(backLeft),
@@ -105,25 +117,25 @@ public class RobotTeleopPOV_Linear extends LinearOpMode {
             else if (gamepad1.left_bumper)
                 clawOffset -= CLAW_SPEED;
 
-            // Move both servos to new position.
+            // Move claw servo to new position.
             clawOffset = Range.clip(clawOffset, -0.5, 0.5);
             claw.setPosition(MID_SERVO + clawOffset);
 
             // Use gamepad buttons to move arm up (Y) and down (A)
             if (gamepad1.y)
-                arm.setPower(ARM_UP_POWER);
+                arm.setPower(ARM_POWER);
             else if (gamepad1.a)
-                arm.setPower(ARM_DOWN_POWER);
+                arm.setPower(-ARM_POWER);
             else
-                arm.setPower(0.0);
+                arm.setPower(0);
 
             // Use gamepad buttons to move slide up (X) and down (B)
             if (gamepad1.x)
-                slide.setPower(SLIDE_UP_POWER);
+                slide.setPower(SLIDE_POWER);
             else if (gamepad1.b)
-                slide.setPower(SLIDE_DOWN_POWER);
+                slide.setPower(-SLIDE_POWER);
             else
-                slide.setPower(0.0);
+                slide.setPower(0);
 
             // Use gamepad triggers to control the bucket
             if (gamepad1.right_trigger > 0)
@@ -137,8 +149,8 @@ public class RobotTeleopPOV_Linear extends LinearOpMode {
             // Send telemetry message to signify robot running;
             telemetry.addData("claw",  "Offset = %.2f", clawOffset);
             telemetry.addData("bucket", "Offset = %.2f", bucketOffset);
-            telemetry.addData("arm",     "%.2f", arm.getPower());
-            telemetry.addData("slide",   "%.2f", slide.getPower());
+            telemetry.addData("arm", "Position = %d", arm.getCurrentPosition());
+            telemetry.addData("slide", "Position = %d", slide.getCurrentPosition());
             telemetry.addData("front left/right", "%.2f / %.2f", frontLeft, frontRight);
             telemetry.addData("back left/right", "%.2f / %.2f", backLeft, backRight);
             telemetry.update();
