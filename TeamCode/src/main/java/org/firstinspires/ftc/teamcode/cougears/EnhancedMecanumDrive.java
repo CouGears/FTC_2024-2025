@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="Enhanced Mecanum Drive", group="Drive")
+@TeleOp(name="11/14 Competition Drive", group="Drive")
 public class EnhancedMecanumDrive extends LinearOpMode {
     // Drive motors
     private DcMotor motorFL;
