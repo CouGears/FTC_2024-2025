@@ -33,6 +33,11 @@ public class EnhancedMecanumDrive extends LinearOpMode {
     private static final double SERVO_MIN_POS = 0.0;
     private static final double SERVO_MAX_POS = 1.0;
 
+    // Servo position presets
+    private static final double[] SERVO_ARM_POS_LIST = {0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+    private static final double[] SERVO_LOCK_POS_LIST = {0.0, 0.5, 1.0};
+
+
     @Override
     public void runOpMode() {
         // Initialize drive motors
@@ -70,8 +75,12 @@ public class EnhancedMecanumDrive extends LinearOpMode {
         slideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Initialize servo positions
-        double slideServoPosition = 0.5;
-        double paddleServoPosition = 0.5;
+        double armServoPosition = 0.0;
+        double lockServoPosition = 0.0;
+
+        int armServoCurrentPosition = 0;
+        int lockServoCurrentPosition = 0;
+
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -79,15 +88,15 @@ public class EnhancedMecanumDrive extends LinearOpMode {
 
         while (opModeIsActive()) {
             // Drive controls
-            double drive = -gamepad1.left_stick_y;
-            double strafe = gamepad1.left_stick_x;
-            double rotate = gamepad1.right_stick_x;
+            double drive = gamepad1.left_stick_y;  // Forward/back strafe on left stick Y
+            double strafe = gamepad1.left_stick_x;    // Left/right drive on left stick X
+            double rotate = gamepad1.right_stick_x;  // Rotation on right stick X
 
-            // Calculate drive motor powers
-            double frontLeftPower = drive + strafe + rotate;
-            double frontRightPower = drive - strafe - rotate;
-            double backLeftPower = drive - strafe + rotate;
-            double backRightPower = drive + strafe - rotate;
+            // Calculate drive motor powers for strafe-forward configuration
+            double frontLeftPower = strafe + drive + rotate;
+            double frontRightPower = strafe - drive - rotate;
+            double backLeftPower = strafe - drive + rotate;
+            double backRightPower = strafe + drive - rotate;
 
             // Normalize drive motor powers
             double maxPower = Math.max(Math.max(Math.abs(frontLeftPower), Math.abs(frontRightPower)),
@@ -108,20 +117,32 @@ public class EnhancedMecanumDrive extends LinearOpMode {
                 slidePower = -SLIDE_POWER;
             }
 
-            // Slide Servo Control (Triggers)
-            if (gamepad1.left_trigger > 0) {
-                slideServoPosition = Math.max(slideServoPosition - SERVO_INCREMENT, SERVO_MIN_POS);
+            // Slide Servo Control (D-PAD LEFT/RIGHT)
+            if (gamepad1.dpad_left) {
+                if (armServoCurrentPosition <= SERVO_ARM_POS_LIST.length) {
+                    armServoCurrentPosition++;
+                }
+                armServoPosition = SERVO_ARM_POS_LIST[armServoCurrentPosition];
             }
-            if (gamepad1.right_trigger > 0) {
-                slideServoPosition = Math.min(slideServoPosition + SERVO_INCREMENT, SERVO_MAX_POS);
+            if (gamepad1.dpad_right) {
+                if (armServoCurrentPosition > 0) {
+                    armServoCurrentPosition--;
+                }
+                armServoPosition = SERVO_ARM_POS_LIST[armServoCurrentPosition];
             }
 
-            // Paddle Servo Control (Bumpers/Paddles)
+            // Paddle Servo Control (A/B)
             if (gamepad1.a) {
-                paddleServoPosition = Math.max(paddleServoPosition - SERVO_INCREMENT, SERVO_MIN_POS);
+                if (lockServoCurrentPosition <= SERVO_LOCK_POS_LIST.length) {
+                    lockServoCurrentPosition++;
+                }
+                lockServoPosition = SERVO_LOCK_POS_LIST[lockServoCurrentPosition];
             }
             if (gamepad1.b) {
-                paddleServoPosition = Math.min(paddleServoPosition + SERVO_INCREMENT, SERVO_MAX_POS);
+                if (lockServoCurrentPosition > 0) {
+                    lockServoCurrentPosition--;
+                }
+                lockServoPosition = SERVO_LOCK_POS_LIST[lockServoCurrentPosition];
             }
 
             // Apply all motor powers and servo positions
@@ -136,17 +157,17 @@ public class EnhancedMecanumDrive extends LinearOpMode {
             slideRight.setPower(slidePower);
 
             // Servos
-            bigArmLeft.setPosition(slideServoPosition);
-            bigArmRight.setPosition(1.0 - slideServoPosition);  // Inverse position for opposite movement
-            smallArmLeft.setPosition(paddleServoPosition);
-            smallArmRight.setPosition(1.0 - paddleServoPosition);  // Inverse position for opposite movement
+            bigArmLeft.setPosition(armServoPosition);
+            bigArmRight.setPosition(1.0 - armServoPosition);  // Inverse position for opposite movement
+            smallArmLeft.setPosition(lockServoPosition);
+            smallArmRight.setPosition(1.0 - lockServoPosition);  // Inverse position for opposite movement
 
             // Telemetry
             telemetry.addData("Drive Motors", "FL:%.2f FR:%.2f BL:%.2f BR:%.2f",
                     frontLeftPower, frontRightPower, backLeftPower, backRightPower);
             telemetry.addData("Slides", "Power: %.2f", slidePower);
-            telemetry.addData("Slide Servos", "Position: %.2f", slideServoPosition);
-            telemetry.addData("Paddle Servos", "Position: %.2f", paddleServoPosition);
+            telemetry.addData("Slide Servos", "Position: %.2f", armServoPosition);
+            telemetry.addData("Paddle Servos", "Position: %.2f", lockServoPosition);
             telemetry.update();
         }
 
