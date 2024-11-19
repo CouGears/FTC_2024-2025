@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.cougears;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
@@ -46,6 +47,7 @@ import com.qualcomm.robotcore.util.Range;
         L-Stick: FWD/BCK & Strafe
         R-Stick: Yaw (Turning)
  */ //Controller 2: Arm & Claw
+@Disabled
 @TeleOp(name="Robot: Teleop POV", group="Robot")
 public class TeleopPOV_Linear_2Controller extends LinearOpMode {
 
