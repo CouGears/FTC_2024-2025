@@ -65,14 +65,14 @@ public class TeleopPOV_Linear_2Controller extends LinearOpMode {
     double bucketOffset = 0;
 
     public static final double MID_SERVO   =  0.5 ;
-    public static final double CLAW_SPEED  = 0.02 ;
-    public static final double BUCKET_SPEED = 0.02 ;
-    public static final double ARM_UP_POWER    =  0.45 ;
-    public static final double ARM_DOWN_POWER  = -0.45 ;
+    public static final double CLAW_SPEED  = 0.015 ;
+    public static final double BUCKET_SPEED = 0.015 ;
+    public static final double ARM_UP_POWER    =  0.25 ;
+    public static final double ARM_DOWN_POWER  = -0.25 ;
     public static final double SLIDE_UP_POWER   =  0.45 ;
     public static final double SLIDE_DOWN_POWER = -0.45 ;
-    public static final double slowSpeedMultiplier = .6;
-
+    public static final double SLOW_SPEED_MULTIPLIER = .6;
+    public static final double GENERAL_SPEED_MULTIPLIER = .8;
     @Override
     public void runOpMode() {
         double frontLeft;
@@ -87,10 +87,10 @@ public class TeleopPOV_Linear_2Controller extends LinearOpMode {
         boolean speedToggle = false; // False = normal speed and True = slow speed
 
         // Define and Initialize Motors
-        frontLeftDrive  = hardwareMap.get(DcMotor.class, "front_left_drive");
-        frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
-        backLeftDrive   = hardwareMap.get(DcMotor.class, "back_left_drive");
-        backRightDrive  = hardwareMap.get(DcMotor.class, "back_right_drive");
+        frontLeftDrive  = hardwareMap.get(DcMotor.class, "motorFL");
+        frontRightDrive = hardwareMap.get(DcMotor.class, "motorFR");
+        backLeftDrive   = hardwareMap.get(DcMotor.class, "motorBL");
+        backRightDrive  = hardwareMap.get(DcMotor.class, "motorBR");
         arm             = hardwareMap.get(DcMotor.class, "arm");
         slide           = hardwareMap.get(DcMotor.class, "slide");
 
@@ -120,20 +120,20 @@ public class TeleopPOV_Linear_2Controller extends LinearOpMode {
             // Right stick to turn left and right.
             if (activeController == 1) {
                 if (speedToggle == true) {
-                    drive  = -gamepad1.left_stick_y * slowSpeedMultiplier;
-                    strafe = gamepad1.left_stick_x * slowSpeedMultiplier;
-                    turn   = gamepad1.right_stick_x * slowSpeedMultiplier;
+                    drive  = -gamepad1.left_stick_y * SLOW_SPEED_MULTIPLIER;
+                    strafe = gamepad1.left_stick_x * SLOW_SPEED_MULTIPLIER;
+                    turn   = gamepad1.right_stick_x * SLOW_SPEED_MULTIPLIER;
                 } else { // speedToggle == False (AKA normal)
-                    drive  = -gamepad1.left_stick_y;
-                    strafe = gamepad1.left_stick_x;
-                    turn   = gamepad1.right_stick_x;
+                    drive  = -gamepad1.left_stick_y * GENERAL_SPEED_MULTIPLIER;
+                    strafe = gamepad1.left_stick_x * GENERAL_SPEED_MULTIPLIER;
+                    turn   = gamepad1.right_stick_x * GENERAL_SPEED_MULTIPLIER;
                 }
                 telemetry.addData(">", "Controller 1 Active");
 
             } else if (activeController == 2) { // Just inverted the values. Always slow. -E
-                drive  = gamepad2.left_stick_y * slowSpeedMultiplier;
-                strafe = -gamepad2.left_stick_x * slowSpeedMultiplier;
-                turn   = -gamepad2.right_stick_x * slowSpeedMultiplier;
+                drive  = gamepad2.left_stick_y * SLOW_SPEED_MULTIPLIER;
+                strafe = -gamepad2.left_stick_x * SLOW_SPEED_MULTIPLIER;
+                turn   = -gamepad2.right_stick_x * SLOW_SPEED_MULTIPLIER;
                 telemetry.addData(">", "Controller 2 Active");
 
             } else { // Should never get to this but safety never hurt anyone. -E

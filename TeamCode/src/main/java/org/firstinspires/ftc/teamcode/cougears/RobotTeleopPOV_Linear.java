@@ -105,27 +105,24 @@ public class RobotTeleopPOV_Linear extends LinearOpMode {
 
             // POV Mode uses left stick to go forward, backward, and strafe
             // Right stick to turn left and right.
-            drive = gamepad1.left_stick_x;
-            strafe = -gamepad1.left_stick_y;
-            turn = -gamepad1.right_stick_x;
+            drive  = -gamepad1.left_stick_x;  // Negative because the gamepad is inverted
+            strafe = gamepad1.left_stick_y;
+            turn   = gamepad1.right_stick_x;
 
-            // Mecanum drive calculation
-            // For each wheel, we combine the inputs with different signs to achieve mecanum motion
-            frontLeft = drive + strafe + turn;
-            backLeft = drive - strafe + turn;
-            frontRight = drive - strafe - turn;
-            backRight = drive + strafe - turn;
+            // Corrected Mecanum drive calculation
+            frontLeft  = drive - turn - strafe;
+            backLeft   = drive - turn + strafe;
+            frontRight = drive + turn + strafe;
+            backRight  = drive + turn - strafe;
 
-            // Optionally normalize the values to ensure they stay within -1.0 to 1.0
-            max = Math.max(Math.abs(frontLeft), Math.abs(backLeft));
-            max = Math.max(max, Math.abs(frontRight));
-            max = Math.max(max, Math.abs(backRight));
-
+            // Normalize the values so none exceed +/- 1.0
+            max = Math.max(Math.abs(frontLeft), Math.max(Math.abs(backLeft),
+                    Math.max(Math.abs(frontRight), Math.abs(backRight))));
             if (max > 1.0) {
-                frontLeft /= max;
-                backLeft /= max;
+                frontLeft  /= max;
+                backLeft   /= max;
                 frontRight /= max;
-                backRight /= max;
+                backRight  /= max;
             }
 
             // Send calculated power to wheels
