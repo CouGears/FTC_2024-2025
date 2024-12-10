@@ -61,17 +61,18 @@ import java.util.concurrent.TimeUnit;
  */
 @TeleOp(name = "Sensor: HuskyLens", group = "Sensor")
 @Disabled
+//@Disabled
 public class SensorHuskyLens extends LinearOpMode {
 
     private final int READ_PERIOD = 1;
 
     private HuskyLens huskyLens;
+    private final String aprilTagIDToName[] = {"BLoadingZone", "BMiddle", "BBucket", "RLoadingZone", "RMiddle", "RBucket"};
 
     @Override
     public void runOpMode()
     {
         huskyLens = hardwareMap.get(HuskyLens.class, "huskylens");
-
         /*
          * This sample rate limits the reads solely to allow a user time to observe
          * what is happening on the Driver Station telemetry.  Typical applications

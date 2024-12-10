@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.cougears;
+package org.firstinspires.ftc.teamcode.cougears.CameraCode;
 
 import com.qualcomm.hardware.dfrobot.HuskyLens;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
