@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name="11/14 Competition Drive", group="Drive")
-public class EnhancedMecanumDrive extends LinearOpMode {
+public class Comp extends LinearOpMode {
     // Drive motors
     private DcMotor motorFL;
     private DcMotor motorFR;
@@ -26,15 +26,16 @@ public class EnhancedMecanumDrive extends LinearOpMode {
     private Servo smallArmRight;
 
     // Constants
-    private static final double MAX_SPEED = 1.0;
-    private static final double MIN_SPEED = -1.0;
+    private static double MAX_SPEED = 1.0;
+    private static double MIN_SPEED = -1.0;
     private static final double SLIDE_POWER = 0.8;
     private static final double SERVO_INCREMENT = 0.02;
     private static final double SERVO_MIN_POS = 0.0;
     private static final double SERVO_MAX_POS = 1.0;
 
     // Servo position presets
-    private static final double[] SERVO_ARM_POS_LIST = {0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+    private static final double[] SERVO_ARM_POS_LIST_A = {0.0, 0.4, 0.5};
+    private static final double[] SERVO_ARM_POS_LIST_B = {0.0, 0.4, 0.5};
     private static final double[] SERVO_LOCK_POS_LIST = {0.0, 0.5, 1.0};
 
 
@@ -81,6 +82,11 @@ public class EnhancedMecanumDrive extends LinearOpMode {
         int armServoCurrentPosition = 0;
         int lockServoCurrentPosition = 0;
 
+        boolean aPressed = false;
+        boolean bPressed = false;
+        boolean leftPressed = false;
+        boolean rightPressed = false;
+
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -119,30 +125,58 @@ public class EnhancedMecanumDrive extends LinearOpMode {
 
             // Slide Servo Control (D-PAD LEFT/RIGHT)
             if (gamepad1.dpad_left) {
-                if (armServoCurrentPosition <= SERVO_ARM_POS_LIST.length) {
-                    armServoCurrentPosition++;
+                if (!leftPressed) {  // Only execute if button wasn't pressed in previous frame
+                    if (armServoCurrentPosition < SERVO_ARM_POS_LIST_A.length - 1) {
+                        armServoCurrentPosition++;
+                    }
+                    leftPressed = true;  // Mark button as pressed
                 }
-                armServoPosition = SERVO_ARM_POS_LIST[armServoCurrentPosition];
-            }
-            if (gamepad1.dpad_right) {
-                if (armServoCurrentPosition > 0) {
-                    armServoCurrentPosition--;
-                }
-                armServoPosition = SERVO_ARM_POS_LIST[armServoCurrentPosition];
+            } else {
+                leftPressed = false;  // Reset when button is released
             }
 
-            // Paddle Servo Control (A/B)
-            if (gamepad1.a) {
-                if (lockServoCurrentPosition <= SERVO_LOCK_POS_LIST.length) {
-                    lockServoCurrentPosition++;
+            if (gamepad1.dpad_right) {
+                if (!rightPressed) {  // Only execute if button wasn't pressed in previous frame
+                    if (armServoCurrentPosition > 0) {
+                        armServoCurrentPosition--;
+                    }
+                    rightPressed = true;  // Mark button as pressed
                 }
-                lockServoPosition = SERVO_LOCK_POS_LIST[lockServoCurrentPosition];
+            } else {
+                rightPressed = false;  // Reset when button is released
             }
-            if (gamepad1.b) {
-                if (lockServoCurrentPosition > 0) {
-                    lockServoCurrentPosition--;
+
+// Paddle Servo Control (A/B)
+            if (gamepad1.a) {
+                if (!aPressed) {  // Only execute if button wasn't pressed in previous frame
+                    if (lockServoCurrentPosition < SERVO_LOCK_POS_LIST.length - 1) {
+                        lockServoCurrentPosition++;
+                    }
+                    lockServoPosition = SERVO_LOCK_POS_LIST[lockServoCurrentPosition];
+                    aPressed = true;  // Mark button as pressed
                 }
-                lockServoPosition = SERVO_LOCK_POS_LIST[lockServoCurrentPosition];
+            } else {
+                aPressed = false;  // Reset when button is released
+            }
+
+            if (gamepad1.b) {
+                if (!bPressed) {  // Only execute if button wasn't pressed in previous frame
+                    if (lockServoCurrentPosition > 0) {
+                        lockServoCurrentPosition--;
+                    }
+                    lockServoPosition = SERVO_LOCK_POS_LIST[lockServoCurrentPosition];
+                    bPressed = true;  // Mark button as pressed
+                }
+            } else {
+                bPressed = false;  // Reset when button is released
+            }
+
+            if (gamepad1.x) {
+                MAX_SPEED = 1.0;
+                MIN_SPEED = -1.0;
+            } else if (gamepad1.y) {
+                MAX_SPEED = 0.5;
+                MIN_SPEED = -0.5;
             }
 
             // Apply all motor powers and servo positions
@@ -157,8 +191,8 @@ public class EnhancedMecanumDrive extends LinearOpMode {
             slideRight.setPower(slidePower);
 
             // Servos
-            bigArmLeft.setPosition(armServoPosition);
-            bigArmRight.setPosition(1.0 - armServoPosition);  // Inverse position for opposite movement
+            bigArmLeft.setPosition(SERVO_ARM_POS_LIST_A[armServoCurrentPosition]);
+            bigArmRight.setPosition(1.0 - SERVO_ARM_POS_LIST_B[armServoCurrentPosition]);  // Inverse position for opposite movement
             smallArmLeft.setPosition(lockServoPosition);
             smallArmRight.setPosition(1.0 - lockServoPosition);  // Inverse position for opposite movement
 
