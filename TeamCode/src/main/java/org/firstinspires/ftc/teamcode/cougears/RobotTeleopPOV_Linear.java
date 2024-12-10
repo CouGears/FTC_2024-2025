@@ -60,12 +60,12 @@ public class RobotTeleopPOV_Linear extends LinearOpMode {
         double max;
 
         // Define and Initialize Motors
-        frontLeftDrive  = hardwareMap.get(DcMotorEx.class, "motorFL");
+        frontLeftDrive = hardwareMap.get(DcMotorEx.class, "motorFL");
         frontRightDrive = hardwareMap.get(DcMotorEx.class, "motorFR");
-        backLeftDrive   = hardwareMap.get(DcMotorEx.class, "motorBL");
-        backRightDrive  = hardwareMap.get(DcMotorEx.class, "motorBR");
-        arm             = hardwareMap.get(DcMotorEx.class, "arm");
-        slide           = hardwareMap.get(DcMotorEx.class, "slide");
+        backLeftDrive = hardwareMap.get(DcMotorEx.class, "motorBL");
+        backRightDrive = hardwareMap.get(DcMotorEx.class, "motorBR");
+        arm = hardwareMap.get(DcMotorEx.class, "arm");
+        slide = hardwareMap.get(DcMotorEx.class, "slide");
 
         // Set motor directions
         frontLeftDrive.setDirection(DcMotorEx.Direction.FORWARD);
