@@ -33,10 +33,16 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.firstinspires.ftc.teamcode.cougears.CameraCode;
 
 import com.qualcomm.hardware.dfrobot.HuskyLens;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.teamcode.cougears.Autonomous.AutonomousMethods;
 
 /*
  * This OpMode illustrates how to use the DFRobot HuskyLens.
@@ -56,23 +62,64 @@ import com.qualcomm.robotcore.util.Range;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
-@TeleOp(name = "Sensor: HuskyLens", group = "Sensor")
+@Autonomous(name = "AprilTag Follow")
 public class AutonHuskyBasic extends LinearOpMode {
     private DcMotor motorFL, motorBR, motorFR, motorBL;
     private HuskyLens huskyLens;
     private final String aprilTagIDToName[] = {"BLoadingZone", "BMiddle", "BBucket", "RLoadingZone", "RMiddle", "RBucket"};
 
+    public DcMotorEx frontLeftDrive   = null;
+    public DcMotorEx frontRightDrive  = null;
+    public DcMotorEx backLeftDrive    = null;
+    public DcMotorEx backRightDrive   = null;
+    public DcMotorEx arm              = null;
+    public DcMotorEx slide            = null;
+    public Servo claw             = null;
+    public Servo    bucket           = null;
+
+
+
+    private AutonomousMethods robot = null;
+
     @Override
     public void runOpMode() {
-        huskyLens = hardwareMap.get(HuskyLens.class, "HuskyLens");
-        motorFL = hardwareMap.get(DcMotor.class, "motorFL");
-        motorFR = hardwareMap.get(DcMotor.class, "motorFR");
-        motorBL = hardwareMap.get(DcMotor.class, "motorBL");
-        motorBR = hardwareMap.get(DcMotor.class, "motorBR");
-        motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        frontLeftDrive  = hardwareMap.get(DcMotorEx.class, "motorFL");
+        frontRightDrive = hardwareMap.get(DcMotorEx.class, "motorFR");
+        backLeftDrive   = hardwareMap.get(DcMotorEx.class, "motorBL");
+        backRightDrive  = hardwareMap.get(DcMotorEx.class, "motorBR");
+        arm             = hardwareMap.get(DcMotorEx.class, "arm");
+        slide           = hardwareMap.get(DcMotorEx.class, "slide");
+
+        claw   = hardwareMap.get(Servo.class, "claw");
+        bucket = hardwareMap.get(Servo.class, "bucket");
+
+        // Set motor directions
+        frontLeftDrive.setDirection(DcMotorEx.Direction.FORWARD);
+        backLeftDrive.setDirection(DcMotorEx.Direction.REVERSE);
+        frontRightDrive.setDirection(DcMotorEx.Direction.REVERSE);
+        backRightDrive.setDirection(DcMotorEx.Direction.FORWARD);
+
+        // Set zero power behavior
+        frontLeftDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        frontRightDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        backLeftDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        backRightDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        arm.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        slide.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+
+        // Set up encoders for arm and slide
+        arm.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        slide.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        arm.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        slide.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+
+        claw.setPosition(0.0);
+        bucket.setPosition(0.0);
+
+        AutonomousMethods robot = new AutonomousMethods(frontLeftDrive, frontRightDrive, backLeftDrive, backRightDrive, arm, slide, claw, bucket);
+
+
 
         if (!huskyLens.knock()) {
             telemetry.addData(">>", "Problem communicating with " + huskyLens.getDeviceName());
@@ -90,9 +137,7 @@ public class AutonHuskyBasic extends LinearOpMode {
             telemetry.addData("Block count", blocks.length);
             if (blocks.length != 0)
             {
-                /*
-                    Idea here is to map x val of block to get 
-                 */
+
             }
             telemetry.update();
         }

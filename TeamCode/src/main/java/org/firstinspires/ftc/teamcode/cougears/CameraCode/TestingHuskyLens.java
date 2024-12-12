@@ -35,9 +35,13 @@ package org.firstinspires.ftc.teamcode.cougears.CameraCode;
 import com.qualcomm.hardware.dfrobot.HuskyLens;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Servo;
+
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Hashtable;
+
 
 import org.firstinspires.ftc.robotcore.internal.system.Deadline;
 
@@ -61,7 +65,7 @@ import java.util.concurrent.TimeUnit;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
-@TeleOp(name = "Sensor: HuskyLens", group = "Sensor")
+@TeleOp(name = "HuskyLens Test")
 public class TestingHuskyLens extends LinearOpMode {
 
     private HuskyLens huskyLens;
@@ -86,7 +90,12 @@ public class TestingHuskyLens extends LinearOpMode {
             telemetry.addData("Block count", blocks.length);
             for (HuskyLens.Block currblock : blocks)
             {
-                telemetry.addData("Block ID", aprilTagIDToName[currblock.id - 1]);
+                if (currblock.id - 1 > -1) // Safety :)
+                    telemetry.addData("Block ID", aprilTagIDToName[currblock.id - 1]);
+                    telemetry.addData("Block Center X", String.valueOf(currblock.x));
+                    telemetry.addData("Block Center Y", String.valueOf(currblock.y));
+//                    telemetry.addData("Block Center Y", String.valueOf(currblock.));
+//                    telemetry.addData("Block Center Y", String.valueOf(currblock.y));
             }
             telemetry.update();
         }
