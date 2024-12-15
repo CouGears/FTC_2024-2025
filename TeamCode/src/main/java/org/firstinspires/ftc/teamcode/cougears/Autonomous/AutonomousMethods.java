@@ -13,7 +13,7 @@ public class AutonomousMethods {
     private Servo claw, bucket;
 
     // Constants
-    private static final double DRIVE_POWER = 0.5;
+    public static final double DRIVE_POWER = 0.5;
     private static final double TURN_POWER = 0.4;
     private static final double ARM_POWER = 0.5;
     private static final double SLIDE_POWER = 0.5;
@@ -116,7 +116,7 @@ public class AutonomousMethods {
         backRightDrive.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
     }
 
-    private void setDrivePower(double power) {
+    public void setDrivePower(double power) {
         frontLeftDrive.setPower(power);
         frontRightDrive.setPower(power);
         backLeftDrive.setPower(power);
