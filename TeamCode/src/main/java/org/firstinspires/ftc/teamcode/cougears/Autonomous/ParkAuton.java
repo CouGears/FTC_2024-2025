@@ -42,7 +42,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.cougears.Autonomous.AutonomousMethods;
 
 
-@TeleOp(name="ParkAuton", group="Robot")
+@Autonomous(name="ParkAuton", group="Robot")
 public class ParkAuton extends LinearOpMode {
 
     /* Declare OpMode members. */

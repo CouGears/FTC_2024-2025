@@ -29,6 +29,7 @@ package org.firstinspires.ftc.teamcode.cougears.Autonomous;/* Copyright (c) 2017
 
 //package org.firstinspires.ftc.robotcontroller.external.samples;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -36,7 +37,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-@TeleOp(name="ParkAuton", group="Robot")
+@Autonomous(name="ParkAutonWait", group="Robot")
 public class ParkAutonWait extends LinearOpMode {
 
     /* Declare OpMode members. */
@@ -90,6 +91,7 @@ public class ParkAutonWait extends LinearOpMode {
         while(runtime.seconds()<10){
 
         }
+        runtime.reset();
         while (runtime.seconds()<4) {
             motorFL.setPower(.5);
             motorBL.setPower(.5);
