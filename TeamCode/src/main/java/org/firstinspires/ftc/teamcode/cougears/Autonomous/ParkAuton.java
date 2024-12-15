@@ -1,4 +1,4 @@
-/* Copyright (c) 2017 FIRST. All rights reserved.
+package org.firstinspires.ftc.teamcode.cougears.Autonomous;/* Copyright (c) 2017 FIRST. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted (subject to the limitations in the disclaimer below) provided that
@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.robotcontroller.external.samples;
+//package org.firstinspires.ftc.robotcontroller.external.samples;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -39,6 +39,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.cougears.Autonomous.AutonomousMethods;
+
 
 /*
  * This OpMode illustrates the concept of driving a path based on time.
@@ -59,8 +60,7 @@ import org.firstinspires.ftc.teamcode.cougears.Autonomous.AutonomousMethods;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Robot: Auto Drive By Time", group="Robot")
-@Disabled
+@Autonomous(name="ParkAuton", group="Robot")
 public class ParkAuton extends LinearOpMode {
 
     /* Declare OpMode members. */
@@ -134,8 +134,8 @@ public class ParkAuton extends LinearOpMode {
         slideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        private AutonomousMethods bot = new AutonomousMethods(motorFL, motorFR, motorBL, motorBR,
-                 bigArmLeft,  slideLeft, bigArmRight, smallArmLeft)
+         AutonomousMethods bot = new AutonomousMethods(motorFL, motorFR, motorBL, motorBR,
+                 bigArmLeft,  slideLeft, bigArmRight, smallArmLeft);
 
         // Initialize the drive system variables.
 
@@ -150,8 +150,12 @@ public class ParkAuton extends LinearOpMode {
         // Step through each leg of the path, ensuring that the OpMode has not been stopped along the way.
 
         // Step 1:  Drive forward for 3 seconds
-        bot.setDrivePower(AutonomousMethods.DRIVE_POWER);
+        runtime.reset();
+        while (runtime.seconds()<3) {
+            bot.setDrivePower(AutonomousMethods.DRIVE_POWER);
+        }
+        bot.setDrivePower(0);
         }
 
     }
-}
+
