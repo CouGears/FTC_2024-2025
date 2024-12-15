@@ -148,7 +148,7 @@ public class ParkAuton extends LinearOpMode {
         waitForStart();
 
         // Step through each leg of the path, ensuring that the OpMode has not been stopped along the way.
-        bot.turnRight(90);
+
         // Step 1:  Drive forward for 3 seconds
         bot.setDrivePower(AutonomousMethods.DRIVE_POWER);
         }
