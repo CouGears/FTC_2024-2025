@@ -75,16 +75,6 @@ public class ParkAuton extends LinearOpMode {
     private DcMotorEx motorBL;
     private DcMotorEx motorBR;
 
-    // Linear slide motors
-    private DcMotorEx slideLeft;
-    private DcMotorEx slideRight;
-
-    // Servo motors
-    private DcMotorEx bigArmLeft;
-    private Servo bigArmRight;
-    private Servo smallArmLeft;
-    private Servo smallArmRight;
-
     // Constants
     private static double MAX_SPEED = 1.0;
     private static double MIN_SPEED = -1.0;
@@ -93,10 +83,7 @@ public class ParkAuton extends LinearOpMode {
     private static final double SERVO_MIN_POS = 0.0;
     private static final double SERVO_MAX_POS = 1.0;
 
-    // Servo position presets
-    private static final double[] SERVO_ARM_POS_LIST_A = {0.0, 0.4, 0.5};
-    private static final double[] SERVO_ARM_POS_LIST_B = {0.0, 0.4, 0.5};
-    private static final double[] SERVO_LOCK_POS_LIST = {0.0, 0.5, 1.0};
+
 
 
 
@@ -108,13 +95,6 @@ public class ParkAuton extends LinearOpMode {
         motorBR = hardwareMap.get(DcMotorEx.class, "motorBR");
 
         // Initialize slide motors
-        slideLeft = hardwareMap.get(DcMotorEx.class, "slideLeft");
-        slideRight = hardwareMap.get(DcMotorEx.class, "slideRight");
-
-        // Initialize servos
-        bigArmRight = hardwareMap.get(Servo.class, "bigArmRight");
-        smallArmLeft = hardwareMap.get(Servo.class, "smallArmLeft");
-        smallArmRight = hardwareMap.get(Servo.class, "smallArmRight");
 
         // Set motor directions
         motorFL.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -122,20 +102,16 @@ public class ParkAuton extends LinearOpMode {
         motorFR.setDirection(DcMotorSimple.Direction.FORWARD);
         motorBR.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        // Set slide motor directions (opposite to maintain sync)
-        slideLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        slideRight.setDirection(DcMotorSimple.Direction.REVERSE);
+
 
         // Set zero power behavior for all motors
         motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        slideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        slideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-         AutonomousMethods bot = new AutonomousMethods(motorFL, motorFR, motorBL, motorBR,
-                 bigArmLeft,  slideLeft, bigArmRight, smallArmLeft);
+
+         AutonomousMethods bot = new AutonomousMethods(motorFL, motorFR, motorBL, motorBR);
 
         // Initialize the drive system variables.
 

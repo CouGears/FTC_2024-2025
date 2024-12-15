@@ -23,28 +23,28 @@ public class AutonomousMethods {
     // Timer for movement durations
     private ElapsedTime runtime = new ElapsedTime();
 
-    public AutonomousMethods(DcMotorEx fl, DcMotorEx fr, DcMotorEx bl, DcMotorEx br,
-                             DcMotorEx arm, DcMotorEx slide, Servo claw, Servo bucket) {
+    public AutonomousMethods(DcMotorEx fl, DcMotorEx fr, DcMotorEx bl, DcMotorEx br
+) {
         this.frontLeftDrive = fl;
         this.frontRightDrive = fr;
         this.backLeftDrive = bl;
         this.backRightDrive = br;
-        this.arm = arm;
-        this.slide = slide;
-        this.claw = claw;
-        this.bucket = bucket;
+//        this.arm = arm;
+//        this.slide = slide;
+//        this.claw = claw;
+//        this.bucket = bucket;
 
         // Set zero power behavior
         frontLeftDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         frontRightDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         backLeftDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         backRightDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        arm.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        slide.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+//        arm.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+//        slide.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
         // Set up encoders
-        arm.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        slide.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+//        arm.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+//        slide.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
     }
 
     public void driveForward(double inches) {
@@ -76,33 +76,33 @@ public class AutonomousMethods {
         turnRight(-degrees);
     }
 
-    public void moveArm(double power, long durationMs) {
-        arm.setPower(power);
-        sleep(durationMs);
-        arm.setPower(0);
-    }
+//    public void moveArm(double power, long durationMs) {
+//        arm.setPower(power);
+//        sleep(durationMs);
+//        arm.setPower(0);
+//    }
 
-    public void moveSlide(double power, long durationMs) {
-        slide.setPower(power);
-        sleep(durationMs);
-        slide.setPower(0);
-    }
+//    public void moveSlide(double power, long durationMs) {
+//        slide.setPower(power);
+//        sleep(durationMs);
+//        slide.setPower(0);
+//    }
 
-    public void setClaw(double position) {
-        claw.setPosition(Range.clip(position, 0, 1));
-    }
+//    public void setClaw(double position) {
+//        claw.setPosition(Range.clip(position, 0, 1));
+//    }
 
-    public void setBucket(double position) {
-        bucket.setPosition(Range.clip(position, 0, 1));
-    }
+//    public void setBucket(double position) {
+//        bucket.setPosition(Range.clip(position, 0, 1));
+//    }
 
-    public void interactWithBucket() {
-        // Example interaction: Lower arm, open claw, raise arm
-        moveArm(-ARM_POWER, 1000); // Lower arm
-        setClaw(0.7); // Open claw
-        sleep(500);
-        moveArm(ARM_POWER, 1000); // Raise arm
-    }
+//    public void interactWithBucket() {
+//        // Example interaction: Lower arm, open claw, raise arm
+//        moveArm(-ARM_POWER, 1000); // Lower arm
+//        setClaw(0.7); // Open claw
+//        sleep(500);
+//        moveArm(ARM_POWER, 1000); // Raise arm
+//    }
 
     private void setDriveTargetPosition(int position) {
         frontLeftDrive.setTargetPosition(position);
