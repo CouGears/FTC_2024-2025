@@ -117,7 +117,7 @@ public class AutonHuskyBasic extends LinearOpMode {
         claw.setPosition(0.0);
         bucket.setPosition(0.0);
 
-        AutonomousMethods robot = new AutonomousMethods(frontLeftDrive, frontRightDrive, backLeftDrive, backRightDrive, arm, slide, claw, bucket);
+        AutonomousMethods robot = new AutonomousMethods(frontLeftDrive, frontRightDrive, backLeftDrive, backRightDrive);
 
 
 

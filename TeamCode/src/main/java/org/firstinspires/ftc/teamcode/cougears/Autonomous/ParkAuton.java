@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode.cougears.Autonomous;/* Copyright (c) 2017
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -41,60 +42,27 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.cougears.Autonomous.AutonomousMethods;
 
 
-/*
- * This OpMode illustrates the concept of driving a path based on time.
- * The code is structured as a LinearOpMode
- *
- * The code assumes that you do NOT have encoders on the wheels,
- *   otherwise you would use: RobotAutoDriveByEncoder;
- *
- *   The desired path in this example is:
- *   - Drive forward for 3 seconds
- *   - Spin right for 1.3 seconds
- *   - Drive Backward for 1 Second
- *
- *  The code is written in a simple form with no optimizations.
- *  However, there are several ways that this type of sequence could be streamlined,
- *
- * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
- */
-
-@Autonomous(name="ParkAuton", group="Robot")
+@TeleOp(name="ParkAuton", group="Robot")
 public class ParkAuton extends LinearOpMode {
 
     /* Declare OpMode members. */
-    private ElapsedTime     runtime = new ElapsedTime();
+    private ElapsedTime  runtime = new ElapsedTime();
 
 
-    static final double     FORWARD_SPEED = 0.6;
-    static final double     TURN_SPEED    = 0.5;
-
-    private DcMotorEx motorFL;
-    private DcMotorEx motorFR;
-    private DcMotorEx motorBL;
-    private DcMotorEx motorBR;
-
-    // Constants
-    private static double MAX_SPEED = 1.0;
-    private static double MIN_SPEED = -1.0;
-    private static final double SLIDE_POWER = 0.8;
-    private static final double SERVO_INCREMENT = 0.02;
-    private static final double SERVO_MIN_POS = 0.0;
-    private static final double SERVO_MAX_POS = 1.0;
-
-
+    private DcMotor motorFL;
+    private DcMotor motorFR;
+    private DcMotor motorBL;
+    private DcMotor motorBR;
 
 
 
     @Override
     public void runOpMode() {
-        motorFL = hardwareMap.get(DcMotorEx.class, "motorFL");
-        motorFR = hardwareMap.get(DcMotorEx.class, "motorFR");
-        motorBL = hardwareMap.get(DcMotorEx.class, "motorBL");
-        motorBR = hardwareMap.get(DcMotorEx.class, "motorBR");
+        motorFL = hardwareMap.get(DcMotor.class, "motorFL");
+        motorFR = hardwareMap.get(DcMotor.class, "motorFR");
+        motorBL = hardwareMap.get(DcMotor.class, "motorBL");
+        motorBR = hardwareMap.get(DcMotor.class, "motorBR");
 
-        // Initialize slide motors
 
         // Set motor directions
         motorFL.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -111,8 +79,6 @@ public class ParkAuton extends LinearOpMode {
         motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
-         AutonomousMethods bot = new AutonomousMethods(motorFL, motorFR, motorBL, motorBR);
-
         // Initialize the drive system variables.
 
 
@@ -128,9 +94,15 @@ public class ParkAuton extends LinearOpMode {
         // Step 1:  Drive forward for 3 seconds
         runtime.reset();
         while (runtime.seconds()<3) {
-            bot.setDrivePower(AutonomousMethods.DRIVE_POWER);
+            motorFL.setPower(.5);
+            motorBL.setPower(.5);
+            motorBR.setPower(.5);
+            motorFR.setPower(.5);
         }
-        bot.setDrivePower(0);
+        motorFL.setPower(0);
+        motorBL.setPower(0);
+        motorBR.setPower(0);
+        motorFR.setPower(0);
         }
 
     }
