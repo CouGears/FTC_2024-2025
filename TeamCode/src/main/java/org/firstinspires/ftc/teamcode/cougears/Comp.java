@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.cougears;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -22,8 +23,9 @@ public class Comp extends LinearOpMode {
     // Servo motors
     private Servo bigArmLeft;
     private Servo bigArmRight;
-    private Servo smallArmLeft;
-    private Servo smallArmRight;
+//    private Servo smallArmLeft;
+//    private Servo smallArmRight;
+    private CRServo sillyBoi;
 
     // Constants
     private static double MAX_SPEED = 1.0;
@@ -34,8 +36,11 @@ public class Comp extends LinearOpMode {
     private static final double SERVO_MAX_POS = 1.0;
 
     // Servo position presets
-    private static final double[] SERVO_ARM_POS_LIST_A = {0.0, 0.4, 0.5};
-    private static final double[] SERVO_ARM_POS_LIST_B = {0.0, 0.4, 0.5};
+//    private static final double[] SERVO_ARM_POS_LIST_A = {1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0.0};
+//    private static final double[] SERVO_ARM_POS_LIST_B = {1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0.0};
+
+    private static final double[] SERVO_ARM_POS_LIST_A = {0.75, 0.8, 0.85, 0.9, 0.95, 1.0};
+    private static final double[] SERVO_ARM_POS_LIST_B = {0.75, 0.8, 0.85, 0.9, 0.95, 1.0};
     private static final double[] SERVO_LOCK_POS_LIST = {0.0, 0.5, 1.0};
 
 
@@ -54,8 +59,9 @@ public class Comp extends LinearOpMode {
         // Initialize servos
         bigArmLeft = hardwareMap.get(Servo.class, "bigArmLeft");
         bigArmRight = hardwareMap.get(Servo.class, "bigArmRight");
-        smallArmLeft = hardwareMap.get(Servo.class, "smallArmLeft");
-        smallArmRight = hardwareMap.get(Servo.class, "smallArmRight");
+//        smallArmLeft = hardwareMap.get(Servo.class, "smallArmLeft");
+//        smallArmRight = hardwareMap.get(Servo.class, "smallArmRight");
+        sillyBoi = hardwareMap.get(CRServo.class, "goose");
 
         // Set motor directions
         motorFL.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -87,6 +93,9 @@ public class Comp extends LinearOpMode {
         boolean leftPressed = false;
         boolean rightPressed = false;
 
+
+        bigArmLeft.setPosition(SERVO_ARM_POS_LIST_A[armServoCurrentPosition]);
+        bigArmRight.setPosition(1.0 - SERVO_ARM_POS_LIST_B[armServoCurrentPosition]);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -147,28 +156,36 @@ public class Comp extends LinearOpMode {
             }
 
 // Paddle Servo Control (A/B)
-            if (gamepad1.a) {
-                if (!aPressed) {  // Only execute if button wasn't pressed in previous frame
-                    if (lockServoCurrentPosition < SERVO_LOCK_POS_LIST.length - 1) {
-                        lockServoCurrentPosition++;
-                    }
-                    lockServoPosition = SERVO_LOCK_POS_LIST[lockServoCurrentPosition];
-                    aPressed = true;  // Mark button as pressed
-                }
-            } else {
-                aPressed = false;  // Reset when button is released
-            }
+//            if (gamepad1.a) {
+//                if (!aPressed) {  // Only execute if button wasn't pressed in previous frame
+//                    if (lockServoCurrentPosition < SERVO_LOCK_POS_LIST.length - 1) {
+//                        lockServoCurrentPosition++;
+//                    }
+//                    lockServoPosition = SERVO_LOCK_POS_LIST[lockServoCurrentPosition];
+//                    aPressed = true;  // Mark button as pressed
+//                }
+//            } else {
+//                aPressed = false;  // Reset when button is released
+//            }
+//
+//            if (gamepad1.b) {
+//                if (!bPressed) {  // Only execute if button wasn't pressed in previous frame
+//                    if (lockServoCurrentPosition > 0) {
+//                        lockServoCurrentPosition--;
+//                    }
+//                    lockServoPosition = SERVO_LOCK_POS_LIST[lockServoCurrentPosition];
+//                    bPressed = true;  // Mark button as pressed
+//                }
+//            } else {
+//                bPressed = false;  // Reset when button is released
+//            }
 
-            if (gamepad1.b) {
-                if (!bPressed) {  // Only execute if button wasn't pressed in previous frame
-                    if (lockServoCurrentPosition > 0) {
-                        lockServoCurrentPosition--;
-                    }
-                    lockServoPosition = SERVO_LOCK_POS_LIST[lockServoCurrentPosition];
-                    bPressed = true;  // Mark button as pressed
-                }
+            if (gamepad1.a) {
+                sillyBoi.setPower(1.0);
+            } else if (gamepad1.b) {
+                sillyBoi.setPower(-1.0);
             } else {
-                bPressed = false;  // Reset when button is released
+                sillyBoi.setPower(0.0);
             }
 
             if (gamepad1.x) {
@@ -193,14 +210,14 @@ public class Comp extends LinearOpMode {
             // Servos
             bigArmLeft.setPosition(SERVO_ARM_POS_LIST_A[armServoCurrentPosition]);
             bigArmRight.setPosition(1.0 - SERVO_ARM_POS_LIST_B[armServoCurrentPosition]);  // Inverse position for opposite movement
-            smallArmLeft.setPosition(lockServoPosition);
-            smallArmRight.setPosition(1.0 - lockServoPosition);  // Inverse position for opposite movement
+//            smallArmLeft.setPosition(lockServoPosition);
+//            smallArmRight.setPosition(1.0 - lockServoPosition);  // Inverse position for opposite movement
 
             // Telemetry
             telemetry.addData("Drive Motors", "FL:%.2f FR:%.2f BL:%.2f BR:%.2f",
                     frontLeftPower, frontRightPower, backLeftPower, backRightPower);
             telemetry.addData("Slides", "Power: %.2f", slidePower);
-            telemetry.addData("Slide Servos", "Position: %.2f", armServoPosition);
+            telemetry.addData("Slide Servos", "Position: %.2f", SERVO_ARM_POS_LIST_A[armServoCurrentPosition]);
             telemetry.addData("Paddle Servos", "Position: %.2f", lockServoPosition);
             telemetry.update();
         }
