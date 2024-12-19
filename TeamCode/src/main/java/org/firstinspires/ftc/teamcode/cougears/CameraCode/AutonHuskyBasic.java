@@ -34,6 +34,7 @@ package org.firstinspires.ftc.teamcode.cougears.CameraCode;
 
 import com.qualcomm.hardware.dfrobot.HuskyLens;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -63,6 +64,7 @@ import org.firstinspires.ftc.teamcode.cougears.Autonomous.AutonomousMethods;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 @Autonomous(name = "AprilTag Follow")
+@Disabled
 public class AutonHuskyBasic extends LinearOpMode {
     private DcMotor motorFL, motorBR, motorFR, motorBL;
     private HuskyLens huskyLens;
@@ -82,6 +84,7 @@ public class AutonHuskyBasic extends LinearOpMode {
     private AutonomousMethods robot = null;
 
     @Override
+
     public void runOpMode() {
 
         frontLeftDrive  = hardwareMap.get(DcMotorEx.class, "motorFL");

@@ -80,7 +80,7 @@ public class TestingHuskyLens extends LinearOpMode {
             telemetry.addData(">>", "Press start to continue");
         }
 
-        huskyLens.selectAlgorithm(HuskyLens.Algorithm.TAG_RECOGNITION);
+        huskyLens.selectAlgorithm(HuskyLens.Algorithm.COLOR_RECOGNITION);
 
         telemetry.update();
         waitForStart();
@@ -90,14 +90,43 @@ public class TestingHuskyLens extends LinearOpMode {
             telemetry.addData("Block count", blocks.length);
             for (HuskyLens.Block currblock : blocks)
             {
-                if (currblock.id - 1 > -1) // Safety :)
-                    telemetry.addData("Block ID", aprilTagIDToName[currblock.id - 1]);
-                    telemetry.addData("Block Center X", String.valueOf(currblock.x));
-                    telemetry.addData("Block Center Y", String.valueOf(currblock.y));
-//                    telemetry.addData("Block Center Y", String.valueOf(currblock.));
-//                    telemetry.addData("Block Center Y", String.valueOf(currblock.y));
+//                if (currblock.id - 1 > -1) // Safety :)
+//                    telemetry.addData("Block ID", aprilTagIDToName[currblock.id - 1]);
+                telemetry.addData("Block Center X", currblock.x);
+                telemetry.addData("Block Center Y", currblock.y);
+                telemetry.addData("Block Height", currblock.height);
+                telemetry.addData("Block Width", currblock.width);
+                telemetry.addData("Block Left", currblock.left);
+                telemetry.addData("Block Top", currblock.top);
+                // Calculate rotation using width and height
+                // Honestly this is too confusing and can be simplified
+                double width = currblock.width;
+                double height = currblock.height;
+                double ratio = Math.min(width, height)/Math.max(width, height);
+                double thetaRadians = Math.atan(ratio);
+                double thetaDegrees = Math.toDegrees(thetaRadians);
+                if(width < height){
+                    thetaDegrees = 90 - thetaDegrees;
+                }
+                thetaDegrees = map(thetaDegrees, 24, 67, 0, 90);
+//                if (currblock.top - height < 120) // Bottom Left y cord
+//                    thetaDegrees *= -1;
+                telemetry.addData("Rotation (degrees)", thetaDegrees);
             }
             telemetry.update();
         }
+    }
+    public static double map(double value, double originalLow, double originalHigh, double newLow, double newHigh) {
+        if(originalLow == originalHigh){
+            throw new IllegalArgumentException("Original low cannot equal original high");
+        }
+
+        // Calculate the normalized value within the original range.
+        double normalizedValue = (value - originalLow) / (originalHigh - originalLow);
+
+        // Map the normalized value to the new range.
+        double mappedValue = newLow + normalizedValue * (newHigh - newLow);
+
+        return mappedValue;
     }
 }
