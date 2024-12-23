@@ -35,17 +35,9 @@ package org.firstinspires.ftc.teamcode.cougears.CameraCode;
 import com.qualcomm.hardware.dfrobot.HuskyLens;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import java.util.Dictionary;
-import java.util.Enumeration;
-import java.util.Hashtable;
-
-
-import org.firstinspires.ftc.robotcore.internal.system.Deadline;
-
-import java.util.concurrent.TimeUnit;
 
 /*
  * This OpMode illustrates how to use the DFRobot HuskyLens.
@@ -65,14 +57,20 @@ import java.util.concurrent.TimeUnit;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
-@TeleOp(name = "HuskyLens Test")
-public class TestingHuskyLens extends LinearOpMode {
+@TeleOp(name = "Husky With Servo")
+public class HuskyWithServo extends LinearOpMode {
 
     private HuskyLens huskyLens;
-
+    private Servo clawServo;
+    private final double servoStep = .05;
+    private final double clawrange = 70;
+    private boolean turnedClaw = false;
     @Override
     public void runOpMode() {
         huskyLens = hardwareMap.get(HuskyLens.class, "HuskyLens");
+        clawServo = hardwareMap.get(Servo.class, "clawServo");
+        clawServo.setPosition(0);
+
         if (!huskyLens.knock()) {
             telemetry.addData(">>", "Problem communicating with " + huskyLens.getDeviceName());
         } else {
@@ -87,31 +85,31 @@ public class TestingHuskyLens extends LinearOpMode {
         while (opModeIsActive()) {
             HuskyLens.Block[] blocks = huskyLens.blocks();
             telemetry.addData("Block count", blocks.length);
-            for (HuskyLens.Block currblock : blocks)
-            {
-//                if (currblock.id - 1 > -1) // Safety :)
-//                    telemetry.addData("Block ID", aprilTagIDToName[currblock.id - 1]);
-                telemetry.addData("Block Center X", currblock.x);
-                telemetry.addData("Block Center Y", currblock.y);
-                telemetry.addData("Block Height", currblock.height);
-                telemetry.addData("Block Width", currblock.width);
-                telemetry.addData("Block Left", currblock.left);
-                telemetry.addData("Block Top", currblock.top);
-                // Calculate rotation using width and height
-                // Honestly this is too confusing and can be simplified
-                double width = currblock.width;
-                double height = currblock.height;
-                double ratio = Math.min(width, height)/Math.max(width, height);
+            if (blocks.length > 0) {
+                double width = blocks[0].width;
+                double height = blocks[0].height;
+                double ratio = Math.min(width, height) / Math.max(width, height);
                 double thetaRadians = Math.atan(ratio);
                 double thetaDegrees = Math.toDegrees(thetaRadians);
-                if(width < height){
+                if (width < height) {
                     thetaDegrees = 90 - thetaDegrees;
                 }
                 thetaDegrees = map(thetaDegrees, 24, 67, 0, 90);
-//                if (currblock.top - height < 120) // Bottom Left y cord
-//                    thetaDegrees *= -1;
                 telemetry.addData("Rotation (degrees)", thetaDegrees);
+                if (thetaDegrees > clawrange)
+                {
+                    turnedClaw = true;
+                    clawServo.setPosition(.5);
+                }
             }
+            else if (!turnedClaw){
+                clawServo.setPosition(0);
+            }
+            if (gamepad1.a)
+            {
+                turnedClaw = false;
+            }
+            telemetry.addData("Current Servo Pos", clawServo.getPosition());
             telemetry.update();
         }
     }
