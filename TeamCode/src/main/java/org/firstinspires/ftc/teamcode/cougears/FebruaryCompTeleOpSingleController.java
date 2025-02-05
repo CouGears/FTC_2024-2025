@@ -10,6 +10,8 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.GoBildaPinpointDriver;
 
+import org.firstinspires.ftc.teamcode.cougears.PresetConstants;
+
 @TeleOp(name="February Comp (1 Controller)", group="Drive")
 public class FebruaryCompTeleOpSingleController extends LinearOpMode {
     // Drive motors
@@ -42,24 +44,29 @@ public class FebruaryCompTeleOpSingleController extends LinearOpMode {
     // position presets
 
     // init, high drop, high hold, mid, low, custom
-    int[] slidePresets = {0, 5400, 5400, 0, 0, 0};
+    int[] slidePresets = PresetConstants.slidePresets;
     // init, high drop, high hold, mid, low, custom
-    int[] armThetaPresets = {0, 400, 100, 600, 775, 0};
+    int[] armThetaPresets = PresetConstants.armThetaPresets;
     // init, high drop, high hold, mid, low, custom
-    double[] axis1Presets = {0.83, 0.5, 0.5, 0.45, 0.6, 0};
+    double[] axis1Presets = PresetConstants.axis1Presets;
     // init, high drop, high hold, mid, low, custom
-    double[] axis2Presets = {0.97, 0.3, 0.3, 0.3, 0.3, 0};
+    double[] axis2Presets = PresetConstants.axis2Presets;
     // open, closed, custom
-    double[] clawPresets = {0.4, 0, 0};
+    double[] clawPresets = PresetConstants.clawPresets;
+
+    int[] axis2Positions = PresetConstants.axis2Positions;
 
     // slide, armtheta, axis1, axis2, claw
     int[] states = new int[5];
 
     int claw = 1;
     int level = 3;
+    int clawLevel = 3;
 
     boolean upPressed = false;
     boolean downPressed = false;
+    boolean leftPressed = false;
+    boolean rightPressed = false;
 
     boolean slow = false;
 
@@ -120,36 +127,20 @@ public class FebruaryCompTeleOpSingleController extends LinearOpMode {
 
         // Initialize servo positions
 
-        states = new int[]{0, 0, 0, 0, 1};
+        states = new int[]{0, 0, 0, 2, 1};
         setStates();
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         waitForStart();
 
-        states = new int[]{3, 3, 0, 0, 1};
+        states = new int[]{3, 3, 0, 2, 1};
         setStates();
         sleep(500);
-        states = new int[]{3, 3, 3, 3, 0};
+        states = new int[]{3, 3, 3, 2, 0};
         claw = 0;
         setStates();
-        sleep(1500);
-//        states = new int[]{3, 3, 3, 3, 0};
-//        setStates();
-//        sleep(1000);
-//        states = new int[]{3, 3, 3, 3, 1};
-//        setStates();
-//        sleep(1000);
-//        states = new int[]{2, 2, 2, 2, 1};
-//        setStates();
-//        sleep(1000);
-//        states = new int[]{1, 1, 1, 1, 1};
-//        setStates();
-//        sleep(2000);
-//        states = new int[]{1, 1, 1, 1, 0};
-//        setStates();
-//
-//        sleep(10000);
+        sleep(1000);
 
         while (opModeIsActive()) {
             // Drive controls
@@ -197,7 +188,7 @@ public class FebruaryCompTeleOpSingleController extends LinearOpMode {
                 if (!upPressed) {
                     level--;
                     level = Math.max(1,level);
-                    states = new int[]{level, level, level, level, claw};
+                    states = new int[]{level, level, level, 2, claw};
                     upPressed = true;
                     if (level == 1) {
                         slow = true;
@@ -210,7 +201,11 @@ public class FebruaryCompTeleOpSingleController extends LinearOpMode {
                 if (!downPressed) {
                     level++;
                     level = Math.min(4,level);
-                    states = new int[]{level, level, level, level, claw};
+                    if (level != 4) {
+                        states = new int[]{level, level, level, 2, claw};
+                    } else {
+                        states = new int[]{level, level, level, clawLevel-1, claw};
+                    }
                     downPressed = true;
                     if (level == 3) {
                         slow = true;
@@ -224,12 +219,33 @@ public class FebruaryCompTeleOpSingleController extends LinearOpMode {
                 downPressed = false;
             }
 
+            if (gamepad1.dpad_left) {
+                if (!leftPressed) {
+                    clawLevel--;
+                    clawLevel = Math.max(1,clawLevel);
+                    states[3] = clawLevel-1;
+                    leftPressed = true;
+                }
+                rightPressed = false;
+            } else if (gamepad1.dpad_right) {
+                if (!rightPressed) {
+                    clawLevel++;
+                    clawLevel = Math.min(5,clawLevel);
+                    states[3] = clawLevel-1;
+                    rightPressed = true;
+                }
+                leftPressed = false;
+            } else {
+                leftPressed = false;
+                rightPressed = false;
+            }
+
             if (gamepad1.a) {
-                states = new int[]{level, level, level, level, claw};
+                states = new int[]{level, level, level, 2, claw};
             }
 
             if (gamepad1.b) {
-                states = new int[]{0, 0, 0, 0, 1};
+                states = new int[]{0, 0, 0, 2, 1};
                 slow = false;
             }
 
@@ -294,35 +310,36 @@ public class FebruaryCompTeleOpSingleController extends LinearOpMode {
                         clawAxis1Servo.setPosition(axis1Presets[state]);
                         break;
                     case 3:
-                        clawAxis2Servo.setPosition(axis2Presets[state]);
+                        clawAxis2Servo.setPosition(axis2Presets[axis2Positions[state]]);
                         break;
                     case 4:
                         clawGrabServo.setPosition(clawPresets[state]);
                         break;
                 }
             } else {
-                switch (i) {
-                    case 0:
-                        slideLeft.setTargetPosition(slidePresets[4]);
-                        slideRight.setTargetPosition(slidePresets[4]);
-                        slideLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        slideRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        break;
-                    case 1:
-                        armThetaDC.setTargetPosition(armThetaPresets[4]);
-                        armThetaDC.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        armThetaDC.setPower(0.2);
-                        break;
-                    case 2:
-                        clawAxis1Servo.setPosition(axis1Presets[4]);
-                        break;
-                    case 3:
-                        clawAxis2Servo.setPosition(axis2Presets[4]);
-                        break;
-                    case 4:
-                        clawGrabServo.setPosition(clawPresets[2]);
-                        break;
-                }
+                continue;
+//                switch (i) {
+//                    case 0:
+//                        slideLeft.setTargetPosition(slidePresets[4]);
+//                        slideRight.setTargetPosition(slidePresets[4]);
+//                        slideLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                        slideRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                        break;
+//                    case 1:
+//                        armThetaDC.setTargetPosition(armThetaPresets[4]);
+//                        armThetaDC.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                        armThetaDC.setPower(0.2);
+//                        break;
+//                    case 2:
+//                        clawAxis1Servo.setPosition(axis1Presets[4]);
+//                        break;
+//                    case 3:
+//                        clawAxis2Servo.setPosition(axis2Presets[4]);
+//                        break;
+//                    case 4:
+//                        clawGrabServo.setPosition(clawPresets[2]);
+//                        break;
+//                }
             }
         }
     }
@@ -348,35 +365,36 @@ public class FebruaryCompTeleOpSingleController extends LinearOpMode {
                         clawAxis1Servo.setPosition(axis1Presets[state]);
                         break;
                     case 3:
-                        clawAxis2Servo.setPosition(axis2Presets[state]);
+                        clawAxis2Servo.setPosition(axis2Presets[axis2Positions[state]]);
                         break;
                     case 4:
                         clawGrabServo.setPosition(clawPresets[state]);
                         break;
                 }
             } else {
-                switch (i) {
-                    case 0:
-                        slideLeft.setTargetPosition(slidePresets[4]);
-                        slideRight.setTargetPosition(slidePresets[4]);
-                        slideLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        slideRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        break;
-                    case 1:
-                        armThetaDC.setTargetPosition(armThetaPresets[4]);
-                        armThetaDC.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        armThetaDC.setPower(0.2);
-                        break;
-                    case 2:
-                        clawAxis1Servo.setPosition(axis1Presets[4]);
-                        break;
-                    case 3:
-                        clawAxis2Servo.setPosition(axis2Presets[4]);
-                        break;
-                    case 4:
-                        clawGrabServo.setPosition(clawPresets[2]);
-                        break;
-                }
+                continue;
+//                switch (i) {
+//                    case 0:
+//                        slideLeft.setTargetPosition(slidePresets[4]);
+//                        slideRight.setTargetPosition(slidePresets[4]);
+//                        slideLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                        slideRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                        break;
+//                    case 1:
+//                        armThetaDC.setTargetPosition(armThetaPresets[4]);
+//                        armThetaDC.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                        armThetaDC.setPower(0.2);
+//                        break;
+//                    case 2:
+//                        clawAxis1Servo.setPosition(axis1Presets[4]);
+//                        break;
+//                    case 3:
+//                        clawAxis2Servo.setPosition(axis2Presets[4]);
+//                        break;
+//                    case 4:
+//                        clawGrabServo.setPosition(clawPresets[2]);
+//                        break;
+//                }
             }
         }
     }
