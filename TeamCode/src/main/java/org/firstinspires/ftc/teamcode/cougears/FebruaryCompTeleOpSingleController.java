@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.cougears;
 
+import com.qualcomm.hardware.dfrobot.HuskyLens;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -31,6 +32,9 @@ public class FebruaryCompTeleOpSingleController extends LinearOpMode {
     private Servo clawGrabServo;
 
     private GoBildaPinpointDriver odo;
+
+    private HuskyLens husky1;
+    private HuskyLens husky2;
 
 
     // Constants
@@ -91,6 +95,9 @@ public class FebruaryCompTeleOpSingleController extends LinearOpMode {
         clawGrabServo = hardwareMap.get(Servo.class, "claw");
 
         odo = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
+
+        husky1 = hardwareMap.get(HuskyLens.class, "husky1");
+        husky2 = hardwareMap.get(HuskyLens.class, "husky2");
 
         // Set motor directions
         motorFL.setDirection(DcMotorSimple.Direction.REVERSE);
