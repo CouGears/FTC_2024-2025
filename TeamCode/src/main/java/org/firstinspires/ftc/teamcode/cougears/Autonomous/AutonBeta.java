@@ -42,6 +42,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -58,22 +59,15 @@ public class AutonBeta extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
 
-    private DcMotor motorFL;
-    private DcMotor motorFR;
-    private DcMotor motorBL;
-    private DcMotor motorBR;
+    private DcMotor motorFL, motorFR, motorBL, motorBR;
 //    AutonomousMethods robot = new AutonomousMethods((DcMotorEx) motorFL, (DcMotorEx) motorFR, (DcMotorEx) motorBL, (DcMotorEx) motorBR);
     // Linear slide motors
-    private DcMotor slideLeft;
-    private DcMotor slideRight;
+    private DcMotor slideLeft, slideRight;
 
     private DcMotor armThetaDC;
-    private HuskyLens husky1;
-    private HuskyLens husky2;
+    private HuskyLens husky1, husky2;
     private boolean turnedClaw = false;
-    private Servo clawAxis1Servo;
-    private Servo clawAxis2Servo;
-    private Servo clawGrabServo;
+    private Servo clawAxis1Servo, clawAxis2Servo, clawGrabServo;
     private GoBildaPinpointDriver odo;
 
     // Constants
@@ -109,6 +103,7 @@ public class AutonBeta extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        AdvancedAutonomousMethods autonMethods = new AdvancedAutonomousMethods(hardwareMap);
         // device mapping
         motorFL = hardwareMap.get(DcMotor.class, "motorFL");
         motorFR = hardwareMap.get(DcMotor.class, "motorFR");
@@ -165,29 +160,39 @@ public class AutonBeta extends LinearOpMode {
         Pose2d beginPose = new Pose2d(-33.0, -63.0, 0.0);
         PinpointDrive drive = new PinpointDrive(hardwareMap, beginPose);
         // start pos to field sample 9
-        Action action1 = drive.actionBuilder(beginPose)
+        Action moveToSampleOne = drive.actionBuilder(beginPose)
                 .setReversed(true)
-                .setTangent(0)
                 .splineToConstantHeading(new Vector2d(-50, -36), Math.toRadians(90))
-                .waitSeconds(5)
-                //brk
+                .build();
+
+        Pose2d lastPose = new Pose2d(-50, -36, 90);
+        Action moveToBucketOne = drive.actionBuilder(lastPose)
                 .setReversed(false)
-                .setTangent(0)
-                .splineToLinearHeading(new Pose2d(-48, -48, Math.toRadians(225)), Math.toRadians(225))
-                .waitSeconds(5)
-                .setTangent(0)
+                .splineTo(new Vector2d(-23,-46), Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(-48, -48, Math.toRadians(225)), Math.toRadians(150))
+                .build();
+
+        lastPose = new Pose2d(-48, -48, 150);
+        Action moveToSampleTwo = drive.actionBuilder(lastPose)
                 .splineToLinearHeading(new Pose2d(-48, -36, Math.toRadians(135)), Math.toRadians(135))
-                .waitSeconds(5)
-                .setTangent(0)
-                .splineToLinearHeading(new Pose2d(-48, -48, Math.toRadians(225)), Math.toRadians(225))
-                .waitSeconds(5)
-                .setTangent(0)
-                .splineToLinearHeading(new Pose2d(-56, -25, Math.toRadians(180)), Math.toRadians(180))
-                .waitSeconds(5)
-                .setReversed(true)
-                .setTangent(0)
+                .build();
+
+        lastPose = new Pose2d(-48, -36, 135);
+        Action moveToBucketTwo = drive.actionBuilder(lastPose)
                 .splineToLinearHeading(new Pose2d(-48, -48, Math.toRadians(225)), Math.toRadians(225))
                 .build();
+
+        lastPose = new Pose2d(-48, -48, 225);
+        Action moveToSampleThree = drive.actionBuilder(lastPose)
+                .splineToLinearHeading(new Pose2d(-56, -25, Math.toRadians(180)), Math.toRadians(180))
+                .build();
+
+        lastPose = new Pose2d(-56, -25, 180);
+        Action moveToBucketThree = drive.actionBuilder(lastPose)
+                .setReversed(true)
+                .splineToLinearHeading(new Pose2d(-48, -48, Math.toRadians(225)), Math.toRadians(225))
+                .build();
+
         // field sample 9 to bucket
 //        Action action2 = drive.actionBuilder(new Pose2d)
         Action action2 = drive.actionBuilder(new Pose2d(-48.0, -38.0, Math.toRadians(0)))
@@ -204,8 +209,12 @@ public class AutonBeta extends LinearOpMode {
         // Wait for the game to start (driver presses START)
         waitForStart();
 
-        Actions.runBlocking(action1);
-
+        Actions.runBlocking(moveToSampleOne);
+        Actions.runBlocking(moveToBucketOne);
+        Actions.runBlocking(moveToSampleTwo);
+        Actions.runBlocking(moveToBucketTwo);
+        Actions.runBlocking(moveToSampleThree);
+        Actions.runBlocking(moveToBucketThree);
 
     }
 
