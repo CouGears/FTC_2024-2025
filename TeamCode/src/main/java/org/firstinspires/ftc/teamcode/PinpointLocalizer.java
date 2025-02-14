@@ -1,101 +1,67 @@
 package org.firstinspires.ftc.teamcode;
 
-
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.DualNum;
-import com.acmerobotics.roadrunner.Time;
-import com.acmerobotics.roadrunner.Twist2dDual;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.PoseVelocity2d;
+import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.acmerobotics.roadrunner.Vector2dDual;
+import com.acmerobotics.roadrunner.ftc.PinpointView;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import java.util.Objects;
 
 @Config
 public final class PinpointLocalizer implements Localizer {
     public static class Params {
-        // Offsets from tracking center (in mm)
-        public double xPodOffset = -84.0; // X pod offset (left is positive)
-        public double yPodOffset = -168.0; // Y pod offset (forward is positive)
+        public double parYTicks = 0.0; // y position of the parallel encoder (in tick units)
+        public double perpXTicks = 0.0; // x position of the perpendicular encoder (in tick units)
     }
 
     public static Params PARAMS = new Params();
 
-    private final GoBildaPinpointDriver pinpoint;
-    private boolean initialized = false;
-    private double lastX, lastY, lastHeading;
+    public final GoBildaPinpointDriver driver;
+    public final GoBildaPinpointDriver.EncoderDirection initialParDirection, initialPerpDirection;
 
-    public PinpointLocalizer(HardwareMap hardwareMap) {
-        // Initialize the Pinpoint driver
-        pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
+    private Pose2d txWorldPinpoint;
+    private Pose2d txPinpointRobot = new Pose2d(0, 0, 0);
 
-        // Configure for 4-bar pods
-        pinpoint.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+    public PinpointLocalizer(HardwareMap hardwareMap, double inPerTick, Pose2d initialPose) {
+        driver = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
 
-        // Set the pod offsets
-        pinpoint.setOffsets(PARAMS.xPodOffset, PARAMS.yPodOffset);
+        double mmPerTick = 25.4 * inPerTick;
+        driver.setEncoderResolution(1 / mmPerTick);
+        driver.setOffsets(mmPerTick * PARAMS.parYTicks, mmPerTick * PARAMS.perpXTicks);
 
-        // Set encoder directions - adjust these if needed based on your pod mounting
-        pinpoint.setEncoderDirections(
-                GoBildaPinpointDriver.EncoderDirection.FORWARD,
-                GoBildaPinpointDriver.EncoderDirection.FORWARD
-        );
+        // TODO: reverse encoder directions if needed
+        initialParDirection = GoBildaPinpointDriver.EncoderDirection.FORWARD;
+        initialPerpDirection = GoBildaPinpointDriver.EncoderDirection.FORWARD;
 
-        // Reset position and calibrate IMU
-        pinpoint.resetPosAndIMU();
+        driver.setEncoderDirections(initialParDirection, initialPerpDirection);
+
+        driver.resetPosAndIMU();
+
+        txWorldPinpoint = initialPose;
     }
 
     @Override
-    public Twist2dDual<Time> update() {
-        // Update Pinpoint readings
-        pinpoint.update();
+    public void setPose(Pose2d pose) {
+        txWorldPinpoint = pose.times(txPinpointRobot.inverse());
+    }
 
-        // Get current position from Pinpoint (in mm)
-        double currentX = pinpoint.getPosX();
-        double currentY = pinpoint.getPosY();
-        double currentHeading = pinpoint.getHeading();
+    @Override
+    public Pose2d getPose() {
+        return txWorldPinpoint.times(txPinpointRobot);
+    }
 
-        // Get velocities from Pinpoint (in mm/s and rad/s)
-        double xVel = pinpoint.getVelX();
-        double yVel = pinpoint.getVelY();
-        double headingVel = pinpoint.getHeadingVelocity();
-
-        if (!initialized) {
-            initialized = true;
-            lastX = currentX;
-            lastY = currentY;
-            lastHeading = currentHeading;
-
-            return new Twist2dDual<>(
-                    Vector2dDual.constant(new Vector2d(0.0, 0.0), 2),
-                    DualNum.constant(0.0, 2)
-            );
+    @Override
+    public PoseVelocity2d update() {
+        driver.update();
+        if (Objects.requireNonNull(driver.getDeviceStatus()) == GoBildaPinpointDriver.DeviceStatus.READY) {
+            txPinpointRobot = new Pose2d(driver.getPosX() / 25.4, driver.getPosY() / 25.4, driver.getHeading());
+            Vector2d worldVelocity = new Vector2d(driver.getVelX() / 25.4, driver.getVelY() / 25.4);
+            Vector2d robotVelocity = Rotation2d.fromDouble(-driver.getHeading()).times(worldVelocity);
+            return new PoseVelocity2d(robotVelocity, driver.getHeadingVelocity());
         }
-
-        // Calculate position deltas in millimeters
-        double dx = currentX - lastX;
-        double dy = currentY - lastY;
-        double dh = currentHeading - lastHeading;
-
-        // Update last positions
-        lastX = currentX;
-        lastY = currentY;
-        lastHeading = currentHeading;
-
-        // Create the twist with both position and velocity information
-        return new Twist2dDual<>(
-                new Vector2dDual<>(
-                        new DualNum<Time>(new double[] {
-                                dx / 25.4, // Convert mm to inches for RoadRunner
-                                xVel / 25.4 // Convert mm/s to in/s
-                        }),
-                        new DualNum<Time>(new double[] {
-                                dy / 25.4, // Convert mm to inches for RoadRunner
-                                yVel / 25.4 // Convert mm/s to in/s
-                        })
-                ),
-                new DualNum<>(new double[] {
-                        dh, // Heading change in radians
-                        headingVel // Angular velocity in rad/s
-                })
-        );
+        return new PoseVelocity2d(new Vector2d(0, 0), 0);
     }
 }
