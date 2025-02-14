@@ -18,20 +18,11 @@ public class AutonBeta {
                 .setDimensions(width,height)
                 .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(-33, -63, Math.toRadians(0)))
                         .setReversed(true)
-                        .splineToConstantHeading(new Vector2d(-50, -36), Math.toRadians(90))
-                        .waitSeconds(5)
-                        //brk
+                        .setTangent(Math.toRadians(90))
+                        .splineToConstantHeading(new Vector2d(-48.0, -40.0), Math.toRadians(90))
                         .setReversed(false)
-                        .splineToLinearHeading(new Pose2d(-48, -48, Math.toRadians(225)), Math.toRadians(225))
-                        .waitSeconds(5)
-                        .splineToLinearHeading(new Pose2d(-48, -36, Math.toRadians(135)), Math.toRadians(135))
-                        .waitSeconds(5)
-                        .splineToLinearHeading(new Pose2d(-48, -48, Math.toRadians(225)), Math.toRadians(225))
-                        .waitSeconds(5)
-                        .splineToLinearHeading(new Pose2d(-56, -25, Math.toRadians(180)), Math.toRadians(180))
-                        .waitSeconds(5)
-                        .setReversed(true)
-                        .splineToLinearHeading(new Pose2d(-48, -48, Math.toRadians(225)), Math.toRadians(225))
+                        .setTangent(Math.toRadians(270))
+                        .splineToLinearHeading(new Pose2d(-48.0, -48.0, Math.toRadians(135)), Math.toRadians(270))
                         .build());
 
 
