@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.cougears.autonomous.RRHardware;
+package org.firstinspires.ftc.teamcode.cougears.autonomous.rr.hardware;
 
 import androidx.annotation.NonNull;
 
@@ -34,7 +34,7 @@ public class Axis2 {
         return new Axis2To(targetPos);
     }
 
-    public Action axis1ToLevel(int level) {
-        return new Axis2To(PresetConstants.axis2Presets[level]);
+    public Action axis2ToPreset(int preset) {
+        return new Axis2To(PresetConstants.axis2Presets[preset]);
     }
 }

@@ -16,13 +16,9 @@ public class AutonBeta {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(40, 40, Math.toRadians(180), Math.toRadians(180), 12.785)
                 .setDimensions(width,height)
-                .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(-33, -63, Math.toRadians(0)))
-                        .setReversed(true)
-                        .setTangent(Math.toRadians(90))
-                        .splineToConstantHeading(new Vector2d(-48.0, -40.0), Math.toRadians(90))
-                        .setReversed(false)
-                        .setTangent(Math.toRadians(270))
-                        .splineToLinearHeading(new Pose2d(-48.0, -48.0, Math.toRadians(135)), Math.toRadians(270))
+                .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(-48, -36, Math.toRadians(45)))
+                        .setTangent(Math.toRadians(315))
+                        .splineToLinearHeading(new Pose2d(-48, -48, Math.toRadians(135)), Math.toRadians(225))
                         .build());
 
 

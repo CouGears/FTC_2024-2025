@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.cougears.autonomous.RRHardware;
+package org.firstinspires.ftc.teamcode.cougears.autonomous.rr.hardware;
 
 import com.qualcomm.hardware.dfrobot.HuskyLens;
 import com.qualcomm.robotcore.hardware.HardwareMap;

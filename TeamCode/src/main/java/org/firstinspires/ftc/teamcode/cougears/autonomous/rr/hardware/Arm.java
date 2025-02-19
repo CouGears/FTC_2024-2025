@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.cougears.autonomous.RRHardware;
+package org.firstinspires.ftc.teamcode.cougears.autonomous.rr.hardware;
 
 import androidx.annotation.NonNull;
 
@@ -147,7 +147,7 @@ public class Arm {
 
     public Action armUpToLevelPatient(int level) {
         if (level == 1) {
-            return new ArmToPatientCustomSpeed(PresetConstants.armThetaPresets[level], 0.05);
+            return new ArmToPatientCustomSpeed(PresetConstants.armThetaPresets[level], 0.1);
         }
         return new ArmToPatient(PresetConstants.armThetaPresets[level]);
     }

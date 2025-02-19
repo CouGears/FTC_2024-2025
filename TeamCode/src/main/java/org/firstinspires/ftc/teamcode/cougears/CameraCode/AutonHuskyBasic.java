@@ -40,7 +40,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.cougears.autonomous.AutonomousMethods;
+import org.firstinspires.ftc.teamcode.cougears.autonomous.old.AutonomousMethods;
 
 /*
  * This OpMode illustrates how to use the DFRobot HuskyLens.
