@@ -1,10 +1,8 @@
-package org.firstinspires.ftc.teamcode.cougears.Autonomous;
+package org.firstinspires.ftc.teamcode.cougears.autonomous.old;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 public class AutonomousMethods {
 

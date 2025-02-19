@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.cougears.Autonomous;
+package org.firstinspires.ftc.teamcode.cougears.autonomous.old;
 
 import com.qualcomm.hardware.dfrobot.HuskyLens;
 import com.qualcomm.robotcore.hardware.DcMotor;

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.cougears;
 
+import com.acmerobotics.roadrunner.ftc.GoBildaPinpointDriverRR;
 import com.qualcomm.hardware.dfrobot.HuskyLens;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -31,7 +32,7 @@ public class FebruaryCompTeleOpSingleController extends LinearOpMode {
     private Servo clawAxis2Servo;
     private Servo clawGrabServo;
 
-    private GoBildaPinpointDriver odo;
+    private GoBildaPinpointDriverRR pinpoint;
 
     private HuskyLens husky1;
     private HuskyLens husky2;
@@ -94,7 +95,7 @@ public class FebruaryCompTeleOpSingleController extends LinearOpMode {
         clawAxis2Servo = hardwareMap.get(Servo.class, "axis2");
         clawGrabServo = hardwareMap.get(Servo.class, "claw");
 
-        odo = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
+        pinpoint = hardwareMap.get(GoBildaPinpointDriverRR.class, "pinpoint");
 
         husky1 = hardwareMap.get(HuskyLens.class, "husky1");
         husky2 = hardwareMap.get(HuskyLens.class, "husky2");

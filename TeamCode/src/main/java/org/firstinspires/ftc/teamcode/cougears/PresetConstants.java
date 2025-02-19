@@ -8,9 +8,9 @@ public class PresetConstants {
     // init, high drop, high hold, mid, low
     public static int[] slidePresets = {0, 5400, 5400, 0, 0};
     // init, high drop, high hold, mid, low
-    public static int[] armThetaPresets = {0, 400, 100, 600, 680};
+    public static int[] armThetaPresets = {0, 200, 100, 600, 700};
     // init, high drop, high hold, mid, low
-    public static double[] axis1Presets = {0.38, 0.62, 0.5, 0.57, 0.63};
+    public static double[] axis1Presets = {0.38, 0.5, 0.5, 0.57, 0.63};
     public static int[] axis2Positions = {2, 1, 0, 3, 4};
 
     // center, half left, full left, half right, full right

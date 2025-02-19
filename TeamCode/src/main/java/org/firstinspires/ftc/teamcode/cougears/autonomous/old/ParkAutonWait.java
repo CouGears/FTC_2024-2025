@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.cougears.Autonomous;/* Copyright (c) 2017 FIRST. All rights reserved.
+package org.firstinspires.ftc.teamcode.cougears.autonomous.old;/* Copyright (c) 2017 FIRST. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted (subject to the limitations in the disclaimer below) provided that
@@ -30,20 +30,14 @@ package org.firstinspires.ftc.teamcode.cougears.Autonomous;/* Copyright (c) 2017
 //package org.firstinspires.ftc.robotcontroller.external.samples;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.cougears.Autonomous.AutonomousMethods;
 
-
-@Autonomous(name="ParkAuton", group="Robot")
-public class ParkAuton extends LinearOpMode {
+@Autonomous(name="ParkAutonWait", group="Robot")
+public class ParkAutonWait extends LinearOpMode {
 
     /* Declare OpMode members. */
     private ElapsedTime  runtime = new ElapsedTime();
@@ -93,7 +87,11 @@ public class ParkAuton extends LinearOpMode {
 
         // Step 1:  Drive forward for 3 seconds
         runtime.reset();
-        while (runtime.seconds()<3) {
+        while(runtime.seconds()<10){
+
+        }
+        runtime.reset();
+        while (runtime.seconds()<4) {
             motorFL.setPower(.5);
             motorBL.setPower(.5);
             motorBR.setPower(.5);
