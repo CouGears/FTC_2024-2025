@@ -50,16 +50,32 @@ public class TAB {
     public static final Pose2d parkedA1pose = new Pose2d(-60.0, 60.0, Math.toRadians(180));
     public static final Pose2d parkedB1pose = new Pose2d(-36.0, 60.0, Math.toRadians(180));
 
+    public static final Pose2d RSubPreppose1 = new Pose2d(0.0, -34.0, Math.toRadians(0));
+    public static final Pose2d RSubPostpose1 = new Pose2d(0.0, -40.0, Math.toRadians(0));
 
     public TAB(MecanumDrive drive) {
         this.drive = drive;
+    }
+
+    public TrajectoryActionBuilder ROItoRSubPreppose1() {
+        return drive.actionBuilder(ROIpose)
+                .setReversed(false)
+                .setTangent(Math.toRadians(90))
+                .splineToLinearHeading(RSubPreppose1, Math.toRadians(90));
+    }
+
+    public TrajectoryActionBuilder RSubPreppose1toRSubPostpose1() {
+        return drive.actionBuilder(ROIpose)
+                .setReversed(false)
+                .setTangent(Math.toRadians(270))
+                .splineToLinearHeading(RSubPostpose1, Math.toRadians(270));
     }
 
     // Red Bucket Init to Field Sample 9
     public TrajectoryActionBuilder RBItoFS9() {
         return drive.actionBuilder(RBIpose)
                 .setReversed(true)
-                .setTangent(90)
+                .setTangent(Math.toRadians(90))
                 .splineToLinearHeading(FS9pose, Math.toRadians(90));
     }
 

@@ -306,7 +306,7 @@ public class FebruaryCompTeleOpSingleController extends LinearOpMode {
                         slideRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         break;
                     case 1:
-                        double power = 0.2;
+                        double power = 1.0;
                         if (state == 1) {
                             power = 0.05;
                         }
