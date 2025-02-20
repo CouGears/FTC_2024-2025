@@ -27,12 +27,12 @@ public class RBHardcoded {
                 tab.RBtoFS8().build(),
                 sampleActions.grabSampleAtAngle(3),
                 tab.FS8toRB().build(),
-                sampleActions.dropSampleInHighBucket(),
-                tab.RBtoFS7().build(),
-                sampleActions.grabSampleAtAngle(2),
-                tab.FS7toRB().build(),
-                sampleActions.dropSampleInHighBucket(),
-                tab.RBtoPARK_E6().build()
+                sampleActions.dropSampleInHighBucket()
+//                tab.RBtoFS7().build(),
+//                sampleActions.grabSampleAtAngle(2),
+//                tab.FS7toRB().build(),
+//                sampleActions.dropSampleInHighBucket(),
+//                tab.RBtoPARK_E6().build()
         );
     }
 }

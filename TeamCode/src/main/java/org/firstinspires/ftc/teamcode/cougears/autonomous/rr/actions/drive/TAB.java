@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.cougears.autonomous.rr.actions.drive;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
+@Config
 public class TAB {
     private final MecanumDrive drive;
 
@@ -22,7 +24,7 @@ public class TAB {
 
 
     // Bucket Poses
-    public static final Pose2d RBpose = new Pose2d(-48, -48, Math.toRadians(135));
+    public static final Pose2d RBpose = new Pose2d(-54.0, -54.0, Math.toRadians(135));
     public static final Pose2d BBpose = new Pose2d(50.0, 50.0, Math.toRadians(225));
 
     // Field Sample Poses
@@ -35,7 +37,7 @@ public class TAB {
     public static final Pose2d FS6pose = new Pose2d(62.0, 25.5, Math.toRadians(270));
 
     public static final Pose2d FS7pose = new Pose2d(-62.0, -25.5, Math.toRadians(90));
-    public static final Pose2d FS8pose = new Pose2d(-50.0, -48.0, Math.toRadians(45));
+    public static final Pose2d FS8pose = new Pose2d(-47.0, -37.0, Math.toRadians(45));
     public static final Pose2d FS9pose = new Pose2d(-48.0, -40.0, Math.toRadians(0));
 
     public static final Pose2d FS10pose = new Pose2d(48.0, -40.0, Math.toRadians(0));
@@ -66,14 +68,14 @@ public class TAB {
         return drive.actionBuilder(FS9pose)
                 .setReversed(false)
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(RBpose, Math.toRadians(135));
+                .splineToSplineHeading(RBpose, Math.toRadians(225));
     }
 
     // Red Bucket to Field Sample 8
     public TrajectoryActionBuilder RBtoFS8() {
         return drive.actionBuilder(RBpose)
                 .setReversed(false)
-                .setTangent(Math.toRadians(315))
+                .setTangent(Math.toRadians(45))
                 .splineToLinearHeading(FS8pose, Math.toRadians(135));
     }
 
@@ -81,7 +83,7 @@ public class TAB {
     public TrajectoryActionBuilder FS8toRB() {
         return drive.actionBuilder(FS8pose)
                 .setReversed(false)
-                .setTangent(Math.toRadians(315))
+                .setTangent(Math.toRadians(270))
                 .splineToLinearHeading(RBpose, Math.toRadians(225));
     }
 

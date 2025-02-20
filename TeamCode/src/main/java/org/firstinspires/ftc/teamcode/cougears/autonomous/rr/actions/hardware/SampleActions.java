@@ -34,7 +34,7 @@ public class SampleActions {
                 claw.closeClaw(),
                 wait.waitSeconds(0.3),
                 axis1.axis1ToLevel(3),
-                arm.armUpToLevelPatient(3)
+                arm.armUpToLevelImpatient(2)
         );
     }
 
@@ -50,14 +50,15 @@ public class SampleActions {
                 wait.waitSeconds(0.3),
                 axis1.axis1ToLevel(3),
                 axis2.axis2ToPreset(0),
-                arm.armUpToLevelPatient(3)
+                arm.armUpToLevelImpatient(2)
         );
     }
 
     // Drop sample in high bucket
     public SequentialAction dropSampleInHighBucket() {
         return new SequentialAction(
-                arm.armUpToLevelImpatient(2),
+//                arm.armUpToLevelImpatient(2),
+//                wait.waitMillieconds(250),
                 axis1.axis1ToLevel(2),
                 viper.viperToLevelPatient(2),
                 axis1.axis1ToLevel(1),
@@ -66,9 +67,10 @@ public class SampleActions {
                 claw.openClaw(),
                 wait.waitSeconds(0.5),
                 arm.armDownToLevelImpatient(2),
+                wait.waitMillieconds(250),
                 viper.viperToPatient(3),
-                arm.armDownToLevelImpatient(3),
-                axis1.axis1ToLevel(3)
+                arm.armDownToLevelImpatient(2),
+                axis1.axis1ToLevel(2)
         );
     }
 
