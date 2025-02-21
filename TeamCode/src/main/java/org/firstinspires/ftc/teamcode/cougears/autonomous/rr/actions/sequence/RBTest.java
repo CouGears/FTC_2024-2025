@@ -1,19 +1,18 @@
 package org.firstinspires.ftc.teamcode.cougears.autonomous.rr.actions.sequence;
 
-import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
-import com.acmerobotics.roadrunner.Vector2d;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.cougears.autonomous.rr.actions.drive.TAB;
 import org.firstinspires.ftc.teamcode.cougears.autonomous.rr.actions.hardware.SampleActions;
+import org.firstinspires.ftc.teamcode.cougears.autonomous.rr.actions.logic.Wait;
 import org.firstinspires.ftc.teamcode.cougears.autonomous.rr.hardware.Arm;
 import org.firstinspires.ftc.teamcode.cougears.autonomous.rr.hardware.Axis1;
 import org.firstinspires.ftc.teamcode.cougears.autonomous.rr.hardware.Axis2;
 import org.firstinspires.ftc.teamcode.cougears.autonomous.rr.hardware.Claw;
 import org.firstinspires.ftc.teamcode.cougears.autonomous.rr.hardware.Viper;
-import org.firstinspires.ftc.teamcode.cougears.autonomous.rr.actions.logic.Wait;
-public class ROTest {
+
+public class RBTest {
     // Starts at RBI
     // Scores all nearby neutral field samples in high bucket
     // Parks in E6

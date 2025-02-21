@@ -39,6 +39,6 @@ public class Claw {
     }
 
     public Action openClaw() {
-        return new ClawTo(0.35);
+        return new ClawTo(.5);
     }
 }
