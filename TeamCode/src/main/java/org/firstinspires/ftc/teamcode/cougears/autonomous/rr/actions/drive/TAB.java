@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.cougears.autonomous.rr.actions.drive;
 
+import androidx.core.app.NotificationCompat;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
@@ -40,7 +42,9 @@ public class TAB {
     public static final Pose2d FS8pose = new Pose2d(-47.0, -37.0, Math.toRadians(45));
     public static final Pose2d FS9pose = new Pose2d(-48.0, -40.0, Math.toRadians(0));
 
-    public static final Pose2d FS10pose = new Pose2d(48.0, -40.0, Math.toRadians(0));
+    public static final Pose2d FS10pose = new Pose2d(40.0, -41.0, Math.toRadians(315));
+    public static final Pose2d FSX10pose = new Pose2d(40.0, -55, Math.toRadians(225));
+    public static final Pose2d FSXX10pose = new Pose2d(28, -62.0, Math.toRadians(270));
     public static final Pose2d FS11pose = new Pose2d(52.0, -30.0, Math.toRadians(315));
     public static final Pose2d FS12pose = new Pose2d(60.0, -25.5, Math.toRadians(270));
 
@@ -51,7 +55,8 @@ public class TAB {
     public static final Pose2d parkedB1pose = new Pose2d(-36.0, 60.0, Math.toRadians(180));
 
     public static final Pose2d RSubPreppose1 = new Pose2d(0.0, -34.0, Math.toRadians(0));
-    public static final Pose2d RSubPostpose1 = new Pose2d(0.0, -40.0, Math.toRadians(0));
+    public static final Pose2d RSubPostpose1 = new Pose2d(0.0, -48.0, Math.toRadians(0));
+
 
     public TAB(MecanumDrive drive) {
         this.drive = drive;
@@ -65,10 +70,33 @@ public class TAB {
     }
 
     public TrajectoryActionBuilder RSubPreppose1toRSubPostpose1() {
-        return drive.actionBuilder(ROIpose)
+        return drive.actionBuilder(RSubPreppose1)
                 .setReversed(false)
                 .setTangent(Math.toRadians(270))
                 .splineToLinearHeading(RSubPostpose1, Math.toRadians(270));
+    }
+
+    public TrajectoryActionBuilder RSubPostpose1toFS10() {
+        return drive.actionBuilder(RSubPostpose1)
+                .setReversed(false)
+                .setTangent(Math.toRadians(0))
+                .splineToLinearHeading(FS10pose, Math.toRadians(315));
+    }
+
+    public TrajectoryActionBuilder FS10toFSX10() {
+        return drive.actionBuilder(FS10pose)
+                .setReversed(false)
+                .setTangent(Math.toRadians(270))
+                .splineToLinearHeading(FSX10pose, Math.toRadians(270));
+    }
+
+    public TrajectoryActionBuilder FSX10toFSXX10() {
+        return drive.actionBuilder(FSX10pose)
+                .setReversed(false)
+                .setTangent(Math.toRadians(225))
+                .splineToLinearHeading(new Pose2d(20, -60, Math.toRadians(270)), Math.toRadians(180))
+                .setTangent(0)
+                .splineToLinearHeading(FSXX10pose, Math.toRadians(0));
     }
 
     // Red Bucket Init to Field Sample 9
