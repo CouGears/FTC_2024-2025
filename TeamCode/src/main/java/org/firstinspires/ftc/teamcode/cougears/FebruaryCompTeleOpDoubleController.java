@@ -10,12 +10,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.GoBildaPinpointDriver;
-
-import org.firstinspires.ftc.teamcode.cougears.PresetConstants;
-
-@TeleOp(name="Comp (1 Controller)", group="Drive")
-public class FebruaryCompTeleOpSingleController extends LinearOpMode {
+@TeleOp(name="Comp (2 Controller)", group="Drive")
+public class FebruaryCompTeleOpDoubleController extends LinearOpMode {
     // Drive motors
     private DcMotor motorFL;
     private DcMotor motorFR;
@@ -33,10 +29,6 @@ public class FebruaryCompTeleOpSingleController extends LinearOpMode {
     private Servo clawGrabServo;
 
     private GoBildaPinpointDriverRR pinpoint;
-
-    private HuskyLens husky1;
-    private HuskyLens husky2;
-
 
     // Constants
     private static double MAX_SPEED = 1.0;
@@ -97,9 +89,6 @@ public class FebruaryCompTeleOpSingleController extends LinearOpMode {
 
         pinpoint = hardwareMap.get(GoBildaPinpointDriverRR.class, "pinpoint");
 
-        husky1 = hardwareMap.get(HuskyLens.class, "husky1");
-        husky2 = hardwareMap.get(HuskyLens.class, "husky2");
-
         // Set motor directions
         motorFL.setDirection(DcMotorSimple.Direction.REVERSE);
         motorBL.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -151,6 +140,10 @@ public class FebruaryCompTeleOpSingleController extends LinearOpMode {
         sleep(1000);
 
         while (opModeIsActive()) {
+
+            //***********CONTROLLER 1: Movement***********
+            //  X/Y: Speed | Up|Down: Hanging
+
             // Drive controls
             double drive = gamepad1.left_stick_y; // Forward/back strafe on left stick Y
             double strafe = gamepad1.left_stick_x; // Left/right drive on left stick X
@@ -181,81 +174,47 @@ public class FebruaryCompTeleOpSingleController extends LinearOpMode {
                 MIN_SPEED = -0.5;
             }
 
-            if (gamepad1.left_bumper) {
+            else if (gamepad1.dpad_up){
+                states = new int[]{3,0,0,0,0}; // Init all and move slides up
+            }
+            else if (gamepad1.dpad_down){
+                states = new int[]{0,0,0,0,0}; // Init all
+            }
+
+
+
+            //TODO: @Josh plz take a look idk what these states are
+            //***********CONTROLLER 2: Claw and Arm***********
+            // Bumpers: Claw | Up/Down: Specimen | A/B: Pick up Specimen | X: Drop pos
+            if (gamepad2.left_bumper) {
                 // open claw
                 claw = 0;
                 states[4] = claw;
-            } else if (gamepad1.right_bumper) {
+            } else if (gamepad2.right_bumper) {
                 // close claw
                 claw = 1;
                 states[4] = claw;
             }
-
-            // level presets
-            if (gamepad1.dpad_up) {
-                if (!upPressed) {
-                    level--;
-                    level = Math.max(1,level);
-                    states = new int[]{level, level, level, 2, claw};
-                    upPressed = true;
-                    if (level == 1) {
-                        slow = true;
-                    } else {
-                        slow = false;
-                    }
-                }
-                downPressed = false;
-            } else if (gamepad1.dpad_down) {
-                if (!downPressed) {
-                    level++;
-                    level = Math.min(4,level);
-                    if (level != 4) {
-                        states = new int[]{level, level, level, 2, claw};
-                    } else {
-                        states = new int[]{level, level, level, clawLevel-1, claw};
-                    }
-                    downPressed = true;
-                    if (level == 3) {
-                        slow = true;
-                    } else {
-                        slow = false;
-                    }
-                }
-                upPressed = false;
-            } else {
-                upPressed = false;
-                downPressed = false;
+            // Specimens
+            if (gamepad1.dpad_up){
+                states = new int[]{0,0,0,4,claw}; // Closed claw and turned to place on bar
+            }
+            else if (gamepad1.dpad_down){
+                states = new int[]{5,5,5,5,claw}; // Down with open claw
+            }
+            // Samples
+            else if (gamepad1.a){
+                states = new int[]{0,4,3,0,claw}; // Picking up samples from the top
+            }
+            else if (gamepad1.b){
+                states = new int[]{0,0,0,0,claw}; // Holding sample at init pos
+            }
+            else if (gamepad1.x){
+                states = new int[]{1,1,1,0,claw}; // High drop
             }
 
-            if (gamepad1.dpad_left) {
-                if (!leftPressed) {
-                    clawLevel--;
-                    clawLevel = Math.max(1,clawLevel);
-                    states[3] = clawLevel-1;
-                    leftPressed = true;
-                }
-                rightPressed = false;
-            } else if (gamepad1.dpad_right) {
-                if (!rightPressed) {
-                    clawLevel++;
-                    clawLevel = Math.min(5,clawLevel);
-                    states[3] = clawLevel-1;
-                    rightPressed = true;
-                }
-                leftPressed = false;
-            } else {
-                leftPressed = false;
-                rightPressed = false;
-            }
 
-            if (gamepad1.a) {
-                states = new int[]{level, level, level, 2, claw};
-            }
 
-            if (gamepad1.b) {
-                states = new int[]{0, 0, 0, 2, 1};
-                slow = false;
-            }
 
 
 
@@ -295,7 +254,7 @@ public class FebruaryCompTeleOpSingleController extends LinearOpMode {
     }
 
     private void setStates() {
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 6; i++) {
             int state = states[i];
             if (state != -1) {
                 switch (i) {

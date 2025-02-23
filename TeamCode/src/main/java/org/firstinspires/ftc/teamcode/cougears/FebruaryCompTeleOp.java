@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.GoBildaPinpointDriver;
 
-@TeleOp(name="February Comp", group="Drive")
+@TeleOp(name="Comp (1 Controller)", group="Drive")
 public class FebruaryCompTeleOp extends LinearOpMode {
     // Drive motors
     private DcMotor motorFL;
