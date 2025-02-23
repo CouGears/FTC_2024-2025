@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.cougears.PresetConstants;
 
 import java.util.HashMap;
 
-@TeleOp(name="League Tournament (1 Controller)", group="Drive")
+@TeleOp(name="League Tournament TeleOp (1 Controller)", group="Drive")
 public class LeagueTournamentSingleController extends LinearOpMode {
     // Drive motors
     private DcMotor motorFL;
