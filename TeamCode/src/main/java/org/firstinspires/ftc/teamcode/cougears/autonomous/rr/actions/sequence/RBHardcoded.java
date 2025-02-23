@@ -27,7 +27,8 @@ public class RBHardcoded {
                 tab.RBtoFS8().build(),
                 sampleActions.grabSampleAtAngle(3),
                 tab.FS8toRB().build(),
-                sampleActions.dropSampleInHighBucket()
+                sampleActions.dropSampleInHighBucket(),
+                arm.armToPatient(0) // set arm up for teleop
 //                tab.RBtoFS7().build(),
 //                sampleActions.grabSampleAtAngle(2),
 //                tab.FS7toRB().build(),

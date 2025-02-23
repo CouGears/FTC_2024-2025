@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.cougears;
 
 import com.acmerobotics.roadrunner.ftc.GoBildaPinpointDriverRR;
 import com.qualcomm.hardware.dfrobot.HuskyLens;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -10,6 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
+@Disabled
 @TeleOp(name="Comp (2 Controller)", group="Drive")
 public class FebruaryCompTeleOpDoubleController extends LinearOpMode {
     // Drive motors
@@ -58,7 +60,7 @@ public class FebruaryCompTeleOpDoubleController extends LinearOpMode {
 
     int claw = 1;
     int level = 3;
-    int clawLevel = 3;
+    int clawLevel = 2;
 
     boolean upPressed = false;
     boolean downPressed = false;
@@ -175,46 +177,99 @@ public class FebruaryCompTeleOpDoubleController extends LinearOpMode {
             }
 
             else if (gamepad1.dpad_up){
-                states = new int[]{3,0,0,0,0}; // Init all and move slides up
+                claw = 1;
+                clawLevel = 2;
+                level = 8;
             }
             else if (gamepad1.dpad_down){
-                states = new int[]{0,0,0,0,0}; // Init all
+                claw = 1;
+                clawLevel = 2;
+                level = 8;
             }
 
 
 
             //TODO: @Josh plz take a look idk what these states are
             //***********CONTROLLER 2: Claw and Arm***********
-            // Bumpers: Claw | Up/Down: Specimen | A/B: Pick up Specimen | X: Drop pos
+            // left trigger: slides up for hang
+            // right trigger: slides down to hang
+            // left bumper: open claw
+            // right bumper: close claw
+            // A: down to grab specimen
+            // Y: up to get specimen above bar
+            // X: down to attach specimen
+            //B : reset to init
+            // D-PAD UP: raise level (samples)
+            // D-PAD DOWN: lower level (samples)
+
+            // claw left/right
+            if (gamepad2.dpad_right) {
+                clawLevel += 1;
+                clawLevel = Math.min(4, clawLevel);
+            } else if (gamepad2.dpad_left) {
+                clawLevel -= 1;
+                clawLevel = Math.max(0, clawLevel);
+            }
+
+            // claw open/close
             if (gamepad2.left_bumper) {
                 // open claw
                 claw = 0;
-                states[4] = claw;
             } else if (gamepad2.right_bumper) {
                 // close claw
                 claw = 1;
-                states[4] = claw;
-            }
-            // Specimens
-            if (gamepad1.dpad_up){
-                states = new int[]{0,0,0,4,claw}; // Closed claw and turned to place on bar
-            }
-            else if (gamepad1.dpad_down){
-                states = new int[]{5,5,5,5,claw}; // Down with open claw
-            }
-            // Samples
-            else if (gamepad1.a){
-                states = new int[]{0,4,3,0,claw}; // Picking up samples from the top
-            }
-            else if (gamepad1.b){
-                states = new int[]{0,0,0,0,claw}; // Holding sample at init pos
-            }
-            else if (gamepad1.x){
-                states = new int[]{1,1,1,0,claw}; // High drop
             }
 
+            if (gamepad2.left_trigger > 0.1) { // hang - slides up for hang
+                clawLevel = 2;
+                claw = 1;
+                level = 8;
+            } else if (gamepad2.right_trigger > 0.1) { // hang - slides down for hang | equivalent to gamepad2.b
+                clawLevel = 2;
+                claw = 1;
+                level = 0;
+            } else if (gamepad2.a){ // specimen - grab
+                clawLevel = 2;
+                claw = 0;
+                level = 5;
+            }
+            else if (gamepad2.y){ // specimen - prep
+                clawLevel = 4;
+                claw = 1;
+                level = 6;
+            }
+            else if (gamepad2.x){ // specimen - attach
+                clawLevel = 4;
+                claw = 1;
+                level = 7;
+            }
+            else if (gamepad2.b){ // robot - init pos
+                level = 0;
+                clawLevel = 2;
+                claw = 1;
+            } else if (gamepad2.dpad_up){ // sample - up level
+                if (level < 5) {
+                    level -= 1;
+                    level = Math.max(1, level);
+                } else {
+                    level = 3;
+                    clawLevel = 2;
+                    claw = 0;
+                }
+            } else if (gamepad2.dpad_down){ // sample - down level
+                if (level < 5) {
+                    level += 1;
+                    level = Math.min(4, level);
+                } else {
+                    level = 3;
+                    clawLevel = 2;
+                    claw = 0;
+                }
+            } else {
+                //all unpressed
+            }
 
-
+            states = new int[]{level, level, level, clawLevel, claw};
 
 
 
@@ -225,11 +280,6 @@ public class FebruaryCompTeleOpDoubleController extends LinearOpMode {
             motorBL.setPower(Range.clip(backLeftPower, MIN_SPEED, MAX_SPEED));
             motorBR.setPower(Range.clip(backRightPower, MIN_SPEED, MAX_SPEED));
 
-            if (slow) {
-                setStates(true);
-            } else {
-                setStates();
-            }
 
 
             // Telemetry
@@ -268,7 +318,9 @@ public class FebruaryCompTeleOpDoubleController extends LinearOpMode {
                         double power = 1.0;
                         if (state == 1) {
                             power = 0.05;
-                        }
+                        } if (state == 4 || state == 5) {
+                            power = 0.2;
+                    }
                         armThetaDC.setTargetPosition(armThetaPresets[state]);
                         armThetaDC.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         armThetaDC.setPower(power);
@@ -283,86 +335,38 @@ public class FebruaryCompTeleOpDoubleController extends LinearOpMode {
                         clawGrabServo.setPosition(clawPresets[state]);
                         break;
                 }
-            } else {
-                continue;
-//                switch (i) {
-//                    case 0:
-//                        slideLeft.setTargetPosition(slidePresets[4]);
-//                        slideRight.setTargetPosition(slidePresets[4]);
-//                        slideLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//                        slideRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//                        break;
-//                    case 1:
-//                        armThetaDC.setTargetPosition(armThetaPresets[4]);
-//                        armThetaDC.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//                        armThetaDC.setPower(0.2);
-//                        break;
-//                    case 2:
-//                        clawAxis1Servo.setPosition(axis1Presets[4]);
-//                        break;
-//                    case 3:
-//                        clawAxis2Servo.setPosition(axis2Presets[4]);
-//                        break;
-//                    case 4:
-//                        clawGrabServo.setPosition(clawPresets[2]);
-//                        break;
-//                }
             }
         }
     }
 
-    private void setStates(boolean slow) {
-        for (int i = 0; i < 5; i++) {
-            int state = states[i];
-            if (state != -1) {
-                switch (i) {
-                    case 0:
-                        slideLeft.setTargetPosition(slidePresets[state]);
-                        slideRight.setTargetPosition(slidePresets[state]);
-                        slideLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        slideRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        break;
-                    case 1:
-                        double power = 0.05;
-                        armThetaDC.setTargetPosition(armThetaPresets[state]);
-                        armThetaDC.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        armThetaDC.setPower(power);
-                        break;
-                    case 2:
-                        clawAxis1Servo.setPosition(axis1Presets[state]);
-                        break;
-                    case 3:
-                        clawAxis2Servo.setPosition(axis2Presets[axis2Positions[state]]);
-                        break;
-                    case 4:
-                        clawGrabServo.setPosition(clawPresets[state]);
-                        break;
-                }
-            } else {
-                continue;
+//    private void setStates(boolean slow) {
+//        for (int i = 0; i < 5; i++) {
+//            int state = states[i];
+//            if (state != -1) {
 //                switch (i) {
 //                    case 0:
-//                        slideLeft.setTargetPosition(slidePresets[4]);
-//                        slideRight.setTargetPosition(slidePresets[4]);
+//                        slideLeft.setTargetPosition(slidePresets[state]);
+//                        slideRight.setTargetPosition(slidePresets[state]);
 //                        slideLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 //                        slideRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 //                        break;
 //                    case 1:
-//                        armThetaDC.setTargetPosition(armThetaPresets[4]);
+//                        double power = 0.05;
+//                        armThetaDC.setTargetPosition(armThetaPresets[state]);
 //                        armThetaDC.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//                        armThetaDC.setPower(0.2);
+//                        armThetaDC.setPower(power);
 //                        break;
 //                    case 2:
-//                        clawAxis1Servo.setPosition(axis1Presets[4]);
+//                        clawAxis1Servo.setPosition(axis1Presets[state]);
 //                        break;
 //                    case 3:
-//                        clawAxis2Servo.setPosition(axis2Presets[4]);
+//                        clawAxis2Servo.setPosition(axis2Presets[axis2Positions[state]]);
 //                        break;
 //                    case 4:
-//                        clawGrabServo.setPosition(clawPresets[2]);
+//                        clawGrabServo.setPosition(clawPresets[state]);
 //                        break;
 //                }
-            }
-        }
-    }
+//            }
+//        }
+//    }
 }

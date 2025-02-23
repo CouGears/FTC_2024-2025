@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.cougears;
 
 import com.acmerobotics.roadrunner.ftc.GoBildaPinpointDriverRR;
 import com.qualcomm.hardware.dfrobot.HuskyLens;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -14,6 +15,7 @@ import org.firstinspires.ftc.teamcode.GoBildaPinpointDriver;
 
 import org.firstinspires.ftc.teamcode.cougears.PresetConstants;
 
+@Disabled
 @TeleOp(name="Comp (1 Controller)", group="Drive")
 public class FebruaryCompTeleOpSingleController extends LinearOpMode {
     // Drive motors

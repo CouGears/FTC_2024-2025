@@ -76,7 +76,8 @@ public class ROTest {
                 wait.waitMillieconds(250),
                 tab.RSubPreppose3toRSubPostpose3().build(),
                 claw.openClaw(),
-                wait.waitSeconds(10)
+                wait.waitMillieconds(500),
+                arm.armToPatient(0) // set arm up for teleop
         );
     }
 }

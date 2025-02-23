@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.cougears;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -26,6 +27,7 @@ import com.qualcomm.robotcore.util.Range;
     R-Stick: Yaw (Turning)
  */
 
+@Disabled
 @TeleOp(name="Robot: Teleop POV", group="Robot")
 public class RobotTeleopPOV_Linear extends LinearOpMode {
 
