@@ -1,11 +1,8 @@
 package org.firstinspires.ftc.teamcode.cougears.autonomous.rr.actions.drive;
 
-import androidx.core.app.NotificationCompat;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
-import com.acmerobotics.roadrunner.Vector2d;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
@@ -63,7 +60,7 @@ public class TAB {
     public static final Pose2d RSubPreppose3 = new Pose2d(9, -34.0, Math.toRadians(0));
     public static final Pose2d RSubPostpose3 = new Pose2d(9, -48.0, Math.toRadians(0));
 
-    public static final Pose2d ROPickup = new Pose2d(25.5, -60, Math.toRadians(270));
+    public static final Pose2d ROWaiting = new Pose2d(25.5, -60, Math.toRadians(270));
 
     public TAB(MecanumDrive drive) {
         this.drive = drive;
@@ -86,7 +83,7 @@ public class TAB {
         return drive.actionBuilder(FSXX10pose)
                 .setReversed(false)
                 .setTangent(Math.toRadians(90))
-                .splineToLinearHeading(RSubPreppose3, Math.toRadians(90));
+                .splineToLinearHeading(RSubPreppose2, Math.toRadians(90));
     }
     public TrajectoryActionBuilder RSubPreppose3toRSubPostpose3() {
         return drive.actionBuilder(RSubPreppose3)
@@ -125,7 +122,7 @@ public class TAB {
         return drive.actionBuilder(FSX10pose)
                 .setReversed(false)
                 .setTangent(Math.toRadians(225))
-                .splineToLinearHeading(ROPickup, Math.toRadians(180))
+                .splineToLinearHeading(ROWaiting, Math.toRadians(180))
                 .setTangent(0)
                 .splineToLinearHeading(FSXX10pose, Math.toRadians(0));
     }
@@ -134,10 +131,25 @@ public class TAB {
         return drive.actionBuilder(RSubPostpose2)
                 .setReversed(false)
                 .setTangent(Math.toRadians(225))
-                .splineToLinearHeading(ROPickup, Math.toRadians(180))
+                .splineToLinearHeading(ROWaiting, Math.toRadians(180))
                 .setTangent(0)
                 .splineToLinearHeading(FSXX10pose, Math.toRadians(0));
     }
+
+    public TrajectoryActionBuilder FSX10toROWaiting() {
+        return drive.actionBuilder(FSX10pose)
+                .setReversed(false)
+                .setTangent(Math.toRadians(225))
+                .splineToLinearHeading(ROWaiting, Math.toRadians(180));
+    }
+
+    public TrajectoryActionBuilder ROWaittoFSXX10() {
+        return drive.actionBuilder(ROWaiting)
+                .setReversed(false)
+                .setTangent(0)
+                .splineToLinearHeading(FSXX10pose, Math.toRadians(0));
+    }
+
     // Red Bucket Init to Field Sample 9
     public TrajectoryActionBuilder RBItoFS9() {
         return drive.actionBuilder(RBIpose)
@@ -170,78 +182,6 @@ public class TAB {
                 .splineToLinearHeading(RBpose, Math.toRadians(225));
     }
 
-    /*
-    //**********BLUE**********
-    public TrajectoryActionBuilder RBItoRSubPreppose1() {
-        return drive.actionBuilder(BOIpose)
-                .setReversed(false)
-                .setTangent(Math.toRadians(90))
-                .splineToLinearHeading(RSubPreppose1, Math.toRadians(90));
-    }
-
-    public TrajectoryActionBuilder BSubPreppose1toRSubPostpose1() {
-        return drive.actionBuilder(BSubPreppose1)
-                .setReversed(false)
-                .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(BSubPostpose1, Math.toRadians(270));
-    }
-    public TrajectoryActionBuilder FSXX10toBSubPreppose2() {
-        return drive.actionBuilder(FSXX3pose)
-                .setReversed(false)
-                .setTangent(Math.toRadians(90))
-                .splineToLinearHeading(BSubPreppose3, Math.toRadians(90));
-    }
-    public TrajectoryActionBuilder BSubPreppose3toBSubPostpose3() {
-        return drive.actionBuilder(BSubPreppose3)
-                .setReversed(false)
-                .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(BSubPostpose3, Math.toRadians(270));
-    }
-
-    public TrajectoryActionBuilder FSXX3toBSubPreppose3() {
-        return drive.actionBuilder(FSXX3pose)
-                .setReversed(false)
-                .setTangent(Math.toRadians(90))
-                .splineToLinearHeading(BSubPreppose3, Math.toRadians(90));
-    }
-    public TrajectoryActionBuilder BSubPreppose2toBSubPostpose2() {
-        return drive.actionBuilder(BSubPreppose3)
-                .setReversed(false)
-                .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(BSubPostpose3, Math.toRadians(270));
-    }
-    public TrajectoryActionBuilder BSubPostpose1toFS3() {
-        return drive.actionBuilder(BSubPostpose1)
-                .setReversed(false)
-                .setTangent(Math.toRadians(0))
-                .splineToLinearHeading(FS3pose, Math.toRadians(315));
-    }
-
-    public TrajectoryActionBuilder FS3toFSX3() {
-        return drive.actionBuilder(FS3pose)
-                .setReversed(false)
-                .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(FSX3pose, Math.toRadians(270));
-    }
-
-    public TrajectoryActionBuilder FSX3toFSXX3() {
-        return drive.actionBuilder(FSX3pose)
-                .setReversed(false)
-                .setTangent(Math.toRadians(225))
-                .splineToLinearHeading(BOPickup, Math.toRadians(180))
-                .setTangent(0)
-                .splineToLinearHeading(FSXX3pose, Math.toRadians(0));
-    }
-
-    public TrajectoryActionBuilder BSubPostpose2toFSXX10() {
-        return drive.actionBuilder(BSubPostpose2)
-                .setReversed(false)
-                .setTangent(Math.toRadians(225))
-                .splineToLinearHeading(ROPickup, Math.toRadians(180))
-                .setTangent(0)
-                .splineToLinearHeading(FSXX10pose, Math.toRadians(0));
-    }
-    */
 
 
     //*********NOT USED***********
