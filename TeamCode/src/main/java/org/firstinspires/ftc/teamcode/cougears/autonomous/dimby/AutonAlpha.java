@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode.cougears.autonomous.dimby;/* Copyright (c
 
 import com.qualcomm.hardware.dfrobot.HuskyLens;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -43,6 +44,7 @@ import org.firstinspires.ftc.teamcode.GoBildaPinpointDriver;
 import org.firstinspires.ftc.teamcode.cougears.PresetConstants;
 import org.firstinspires.ftc.teamcode.cougears.autonomous.old.AutonomousMethods;
 
+@Disabled
 @Autonomous(name="ParkAuton", group="Robot")
 public class AutonAlpha extends LinearOpMode {
 

@@ -30,12 +30,14 @@ package org.firstinspires.ftc.teamcode.cougears.autonomous.old;/* Copyright (c) 
 //package org.firstinspires.ftc.robotcontroller.external.samples;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
+@Disabled
 @Autonomous(name="ParkAutonWait", group="Robot")
 public class ParkAutonWait extends LinearOpMode {
 
